@@ -1,0 +1,118 @@
+---
+// PROIN's mark: a hotend whose filament becomes an eye with a spiral.
+// Redrawn as SVG from their Instagram avatar and reel end cards (no vector
+// original was available). With `animate`, the filament draws itself once.
+interface Props {
+  class?: string;
+  animate?: boolean;
+  title?: string;
+}
+
+const { class: className, animate = false, title } = Astro.props;
+---
+
+<svg
+  class:list={["logo", className, { "logo--draw": animate }]}
+  viewBox="0 0 540 910"
+  role={title ? "img" : undefined}
+  aria-label={title}
+  aria-hidden={title ? undefined : "true"}
+  focusable="false"
+>
+  <g class="logo__head">
+    <rect x="132" y="7" width="323" height="163" rx="26" fill="var(--logo-ink)"></rect>
+    <path d="M197 170 H388 V230 Q388 280 338 280 H247 Q197 280 197 230 Z" fill="var(--logo-ink)"></path>
+    <rect x="166" y="31" width="255" height="74" rx="8" fill="var(--logo-light)"></rect>
+    <rect x="227" y="188" width="131" height="44" rx="6" fill="var(--logo-light)"></rect>
+  </g>
+  <g class="logo__lines" fill="none" stroke="var(--logo-ink)" stroke-linecap="round" stroke-linejoin="round">
+    <path
+      class="logo__filament"
+      pathLength="1"
+      stroke-width="30"
+      d="M285 280 C285 350 280 390 225 410 C170 430 148 455 152 478 C156 505 205 520 290 534 C385 550 440 600 470 680 C492 740 512 800 525 855"
+    ></path>
+    <path
+      class="logo__eye"
+      pathLength="1"
+      stroke-width="30"
+      d="M10 550 C100 563 220 578 290 598 C332 610 370 640 372 690 C374 742 336 784 278 787 C218 790 170 752 170 704 C170 656 212 620 262 616 C298 613 330 638 327 670"
+    ></path>
+    <path
+      class="logo__eye logo__eye--2"
+      pathLength="1"
+      stroke-width="17"
+      d="M327 670 C318 688 282 677 252 683 C228 689 214 710 221 731 C229 752 262 761 292 755"
+    ></path>
+    <path
+      class="logo__eye logo__eye--3"
+      pathLength="1"
+      stroke-width="30"
+      d="M525 855 C450 838 330 828 250 812 C170 796 120 740 100 685 C85 645 72 615 65 592"
+    ></path>
+    <path
+      class="logo__eye logo__eye--4"
+      pathLength="1"
+      stroke-width="32"
+      d="M10 550 C40 640 80 735 140 800 C200 862 300 890 410 898"
+    ></path>
+  </g>
+</svg>
+
+<style>
+  .logo {
+    width: auto;
+    height: 100%;
+    overflow: visible;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .logo--draw .logo__head {
+      animation: logo-head 420ms var(--ease-out) both;
+      transform-origin: 50% 0%;
+      transform-box: fill-box;
+    }
+
+    .logo--draw .logo__filament,
+    .logo--draw .logo__eye {
+      stroke-dasharray: 1;
+      stroke-dashoffset: 1;
+      animation: logo-draw 700ms var(--ease-out) forwards;
+    }
+
+    .logo--draw .logo__filament {
+      animation-delay: 260ms;
+      animation-timing-function: var(--ease-in-out);
+    }
+
+    .logo--draw .logo__eye {
+      animation-delay: 820ms;
+    }
+
+    .logo--draw .logo__eye--2 {
+      animation-delay: 1180ms;
+      animation-duration: 420ms;
+    }
+
+    .logo--draw .logo__eye--3 {
+      animation-delay: 900ms;
+    }
+
+    .logo--draw .logo__eye--4 {
+      animation-delay: 860ms;
+    }
+  }
+
+  @keyframes logo-head {
+    from {
+      opacity: 0;
+      transform: translateY(-18%) scale(0.96);
+    }
+  }
+
+  @keyframes logo-draw {
+    to {
+      stroke-dashoffset: 0;
+    }
+  }
+</style>

@@ -1,0 +1,215 @@
+---
+import Photo from "./Photo.astro";
+import Icon from "./Icon.astro";
+import { site, trabajos } from "../data/site";
+---
+
+<section class="section gallery" id="trabajos" aria-labelledby="gallery-title">
+  <div class="wrap gallery__head">
+    <div class="gallery__intro">
+      <p class="eyebrow" data-reveal>Hecho en PROIN</p>
+      <h2 id="gallery-title" class="h2" data-reveal style="--i:1">Recién salido de la impresora.</h2>
+    </div>
+    <div class="gallery__nav" data-reveal style="--i:2">
+      <button type="button" class="round" data-strip-prev aria-label="Trabajo anterior" disabled>
+        <Icon name="arrow-left" size={20} />
+      </button>
+      <button type="button" class="round" data-strip-next aria-label="Siguiente trabajo">
+        <Icon name="arrow-right" size={20} />
+      </button>
+    </div>
+  </div>
+
+  <div class="strip" data-strip>
+    <ul class="strip__track" data-strip-track>
+      {
+        trabajos.map((t, i) => (
+          <li class="card" data-reveal style={`--i:${Math.min(i, 4)}; --ar:${t.foto.width / t.foto.height}`}>
+            <a class="card__link" href={t.post} target="_blank" rel="noopener" draggable="false">
+              <span class="card__media">
+                <Photo src={t.foto} alt={t.alt} />
+              </span>
+              <span class="card__cap">
+                <span class="card__title">{t.titulo}</span>
+                <span class="card__type">
+                  {t.tipo}
+                  <Icon name="arrow-up-right" size={15} class="card__arrow" />
+                </span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+      <li class="card card--end" data-reveal style="--i:4; --ar:0.8">
+        <a class="card__link" href={site.instagram} target="_blank" rel="noopener" draggable="false">
+          <span class="card__media card__media--brand">
+            <Icon name="instagram-logo" size={44} />
+            <span class="card__endtitle">Más trabajos en Instagram</span>
+            <span class="card__endhandle">{site.handle}</span>
+          </span>
+          <span class="card__cap">
+            <span class="card__title">Ver todo</span>
+            <span class="card__type">
+              Reels, historias y pedidos
+              <Icon name="arrow-up-right" size={15} class="card__arrow" />
+            </span>
+          </span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<style>
+  .gallery__head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+
+  .gallery__intro {
+    display: grid;
+    gap: 16px;
+  }
+
+  .gallery__nav {
+    display: flex;
+    gap: 8px;
+  }
+
+  .strip {
+    --card-h: clamp(300px, 34vw, 440px);
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+    scroll-snap-type: x proximity;
+    /* Same as the track's inline padding, so the first card rests aligned
+       with the section heading instead of snapping to the gutter. */
+    scroll-padding-inline: max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+    scrollbar-width: none;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 var(--gutter), #000 calc(100% - var(--gutter)), transparent);
+  }
+
+  .strip::-webkit-scrollbar {
+    display: none;
+  }
+
+  .strip.is-dragging {
+    scroll-snap-type: none;
+    cursor: grabbing;
+  }
+
+  .strip__track {
+    display: flex;
+    gap: clamp(14px, 2vw, 24px);
+    width: max-content;
+    padding-inline: max(var(--gutter), calc((100vw - var(--maxw)) / 2));
+    padding-bottom: 8px;
+  }
+
+  .card {
+    scroll-snap-align: start;
+    flex-shrink: 0;
+  }
+
+  .card__link {
+    display: grid;
+    gap: 14px;
+    border-radius: var(--radius-inner);
+    -webkit-user-drag: none;
+    -webkit-touch-callout: none;
+  }
+
+  .card__media {
+    position: relative;
+    display: block;
+    height: var(--card-h);
+    aspect-ratio: var(--ar);
+    border-radius: var(--radius-inner);
+    overflow: hidden;
+    background: var(--bg-sunken);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .card__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 700ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  .card__cap {
+    display: grid;
+    gap: 2px;
+    padding-inline: 4px;
+  }
+
+  .card__title {
+    font-weight: 680;
+    font-size: 1.08rem;
+    letter-spacing: -0.015em;
+  }
+
+  .card__type {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--ink-3);
+    font-size: 0.93rem;
+  }
+
+  .card__type :global(.card__arrow) {
+    transition: transform 260ms var(--ease-out);
+  }
+
+  /* Closing card: PROIN's own look, violet with their logo pattern. */
+  .card__media--brand {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 10px;
+    padding: 24px;
+    text-align: center;
+    color: #fdfbff;
+    background:
+      var(--pattern) 0 0 / 88px 88px,
+      linear-gradient(160deg, #500589, #8a3bc1 70%, #a558ce);
+  }
+
+  .card__endtitle {
+    font-size: 1.5rem;
+    font-weight: 720;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    max-width: 12ch;
+  }
+
+  .card__endhandle {
+    font-size: 0.92rem;
+    opacity: 0.85;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .strip {
+      cursor: grab;
+    }
+
+    .card__link:hover .card__media :global(img) {
+      transform: scale(1.045);
+    }
+
+    .card__link:hover :global(.card__arrow) {
+      transform: translate(2px, -2px);
+    }
+  }
+
+  @media (max-width: 640px) {
+    .gallery__nav {
+      display: none;
+    }
+  }
+</style>

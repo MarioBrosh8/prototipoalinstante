@@ -1,0 +1,301 @@
+---
+import Photo from "./Photo.astro";
+import Icon from "./Icon.astro";
+import { temas } from "../data/site";
+---
+
+<section class="section faq" id="precios" aria-labelledby="faq-title">
+  <div class="wrap">
+    <header class="faq__head">
+      <h2 id="faq-title" class="h2" data-reveal>Precios, pagos y entregas.</h2>
+      <p class="lede" data-reveal style="--i:1">Así cotizamos. Cualquier otra duda, te atendemos por DM.</p>
+    </header>
+
+    <div class="tabs" data-tabs data-reveal style="--i:2">
+      <div class="tabs__scroller">
+        <div class="tabs__list" role="tablist" aria-label="Temas" data-tablist>
+          {
+            temas.map((t, i) => (
+              <button
+                type="button"
+                role="tab"
+                class="tabs__tab"
+                id={`tab-${t.id}`}
+                aria-controls={`panel-${t.id}`}
+                aria-selected={i === 0 ? "true" : "false"}
+                tabindex={i === 0 ? 0 : -1}
+                data-tab={t.id}
+              >
+                <span>{t.tab}</span>
+              </button>
+            ))
+          }
+          <span class="tabs__active" aria-hidden="true" data-tabs-active>
+            {temas.map((t) => <span class="tabs__tab"><span>{t.tab}</span></span>)}
+          </span>
+        </div>
+      </div>
+
+      <div class="tabs__panels">
+        {
+          temas.map((t, i) => (
+            <div
+              class="panel"
+              role="tabpanel"
+              id={`panel-${t.id}`}
+              aria-labelledby={`tab-${t.id}`}
+              hidden={i !== 0}
+              data-panel={t.id}
+              tabindex="0"
+            >
+              <div class="panel__copy">
+                <h3 class="h3">{t.titulo}</h3>
+                {t.destacado && (
+                  <p class="panel__big">
+                    <span class="panel__value">{t.destacado.valor}</span>
+                    <span class="panel__note">{t.destacado.nota}</span>
+                  </p>
+                )}
+                <ul class="panel__list">
+                  {t.puntos.map((p) => (
+                    <li>
+                      <span class="panel__tick" aria-hidden="true">
+                        <Icon name="check" size={14} />
+                      </span>
+                      {p}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div class="panel__media bezel">
+                <div class="bezel__core panel__frame print-frame">
+                  <div class="print-layer">
+                    <Photo src={t.foto} alt={t.alt} />
+                  </div>
+                  <span class="print-line" aria-hidden="true" />
+                </div>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq__head {
+    display: grid;
+    gap: 16px;
+    margin-bottom: clamp(32px, 5vw, 56px);
+  }
+
+  .tabs__scroller {
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    padding-block: 4px;
+    overscroll-behavior-x: contain;
+  }
+
+  .tabs__scroller::-webkit-scrollbar {
+    display: none;
+  }
+
+  .tabs__list {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    width: max-content;
+    padding: 5px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-raised);
+    box-shadow: inset 0 0 0 1px var(--line);
+  }
+
+  .tabs__tab {
+    display: grid;
+  }
+
+  .tabs__tab span {
+    display: grid;
+    place-items: center;
+    min-height: 46px;
+    padding: 0 20px;
+    border-radius: var(--radius-pill);
+    font-weight: 620;
+    white-space: nowrap;
+    color: var(--ink-2);
+    transition: color 200ms ease;
+  }
+
+  .tabs__active {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    gap: 4px;
+    padding: 5px;
+    border-radius: inherit;
+    background: var(--brand);
+    pointer-events: none;
+    clip-path: inset(0 100% 0 0 round 999px);
+    transition: clip-path 340ms var(--ease-in-out);
+  }
+
+  .tabs__active .tabs__tab span {
+    color: var(--on-brand);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .tabs__tab:hover span {
+      color: var(--ink);
+    }
+  }
+
+  .tabs__panels {
+    margin-top: clamp(28px, 4vw, 44px);
+  }
+
+  .panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(28px, 5vw, 72px);
+    align-items: start;
+    border-radius: var(--radius-inner);
+  }
+
+  .panel:focus-visible {
+    outline-offset: 8px;
+  }
+
+  .panel.is-entering .panel__copy {
+    animation: panel-in 380ms var(--ease-out) both;
+  }
+
+  .panel.is-entering .print-frame {
+    --p: 0;
+    animation: print-rise 700ms steps(16, end) 60ms forwards;
+  }
+
+  .panel.is-entering .print-line {
+    animation: print-line 700ms linear 60ms forwards;
+  }
+
+  @keyframes panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+      filter: blur(4px);
+    }
+  }
+
+  .panel__copy {
+    display: grid;
+    gap: 20px;
+  }
+
+  .panel__big {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+  }
+
+  .panel__value {
+    font-size: clamp(3.4rem, 7vw, 5.4rem);
+    font-weight: 780;
+    letter-spacing: -0.045em;
+    line-height: 0.9;
+    color: var(--accent-text);
+  }
+
+  .panel__note {
+    color: var(--ink-2);
+    max-width: 22ch;
+  }
+
+  .panel__list {
+    display: grid;
+    gap: 14px;
+  }
+
+  .panel__list li {
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    align-items: start;
+    color: var(--ink-2);
+    max-width: 52ch;
+  }
+
+  .panel__tick {
+    display: grid;
+    place-items: center;
+    width: 26px;
+    height: 26px;
+    margin-top: 1px;
+    border-radius: 50%;
+    background: var(--brand-wash);
+    color: var(--accent-text);
+  }
+
+  .panel__frame {
+    aspect-ratio: 4 / 4.2;
+    background: var(--bg-sunken);
+    --p: 1;
+  }
+
+  .panel__frame .print-layer {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(calc((1 - var(--p)) * 100%) 0 0 0);
+  }
+
+  .panel__frame :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .panel__frame .print-line {
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(var(--p) * 100%);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffb070 20%, #fff1e0 50%, #ffb070 80%, transparent);
+    box-shadow: 0 0 14px 2px rgb(255 140 60 / 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  @media (max-width: 859px) {
+    .panel {
+      grid-template-columns: 1fr;
+    }
+
+    .panel__media {
+      max-width: 520px;
+    }
+
+    .panel__frame {
+      aspect-ratio: 16 / 11;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tabs__active {
+      transition-duration: 0ms;
+    }
+
+    .panel.is-entering .panel__copy {
+      animation: none;
+    }
+
+    .panel.is-entering .print-frame,
+    .panel.is-entering .print-line {
+      animation: none;
+      --p: 1;
+    }
+  }
+</style>

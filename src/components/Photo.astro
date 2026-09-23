@@ -1,0 +1,31 @@
+---
+// One canonical encode per photo (AVIF, WebP fallback), so a photo that
+// appears in several sections is a single request served from cache. The
+// sources are mostly 720 px video frames: larger variants would add nothing.
+import { Picture } from "astro:assets";
+
+interface Props {
+  src: ImageMetadata;
+  alt: string;
+  /** Small square-ish thumbnail variant instead of the full photo. */
+  thumb?: boolean;
+  loading?: "lazy" | "eager";
+  class?: string;
+}
+
+const { src, alt, thumb = false, loading = "lazy", class: className } = Astro.props;
+// 900 px covers the largest slot (the category preview) at about 1.6x.
+const width = thumb ? 200 : Math.min(src.width, 900);
+---
+
+<Picture
+  src={src}
+  alt={alt}
+  width={width}
+  formats={["avif", "webp"]}
+  quality={thumb ? 55 : 58}
+  loading={loading}
+  decoding="async"
+  draggable="false"
+  class={className}
+/>

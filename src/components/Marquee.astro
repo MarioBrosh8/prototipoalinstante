@@ -1,0 +1,106 @@
+---
+import { marquesina } from "../data/site";
+---
+
+<section class="marquee" aria-label="Lo que imprimimos">
+  <p class="sr-only">{marquesina.join(", ")}.</p>
+  <div class="marquee__track" aria-hidden="true">
+    {
+      [0, 1].map(() => (
+        <ul class="marquee__group">
+          {marquesina.map((word, i) => (
+            <li class:list={["marquee__item", { "is-outline": i % 2 === 1 }]}>
+              <span>{word}</span>
+              <svg class="marquee__glyph" viewBox="0 0 330 420" width="22" height="28">
+                <rect x="4" y="4" width="322" height="160" rx="26" />
+                <path d="M69 164 H260 V224 Q260 274 210 274 H119 Q69 274 69 224 Z" />
+                <path d="M165 274 V330 Q165 380 140 410" fill="none" stroke-width="30" stroke-linecap="round" />
+              </svg>
+            </li>
+          ))}
+        </ul>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .marquee {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(18px, 3vw, 32px);
+    border-block: 1px solid var(--line);
+    background: var(--bg-sunken);
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  }
+
+  .marquee__track {
+    display: flex;
+    width: max-content;
+  }
+
+  .marquee__group {
+    display: flex;
+    flex-shrink: 0;
+  }
+
+  .marquee__item {
+    display: inline-flex;
+    align-items: center;
+    gap: clamp(18px, 2.4vw, 36px);
+    padding-right: clamp(18px, 2.4vw, 36px);
+    font-size: clamp(2.2rem, 5.6vw, 4.6rem);
+    font-weight: 760;
+    letter-spacing: -0.035em;
+    line-height: 1.1;
+    white-space: nowrap;
+  }
+
+  /* Outlined words: the perimeter of a print before the infill. */
+  .marquee__item.is-outline span {
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink-3);
+  }
+
+  .marquee__glyph {
+    flex-shrink: 0;
+    fill: var(--brand);
+    stroke: var(--brand);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .marquee__track {
+      animation: marquee 42s linear infinite;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      .marquee:hover .marquee__track {
+        animation-play-state: paused;
+      }
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee__group + .marquee__group {
+      display: none;
+    }
+
+    .marquee__group {
+      flex-wrap: wrap;
+      justify-content: center;
+      padding-inline: var(--gutter);
+    }
+
+    .marquee {
+      -webkit-mask-image: none;
+      mask-image: none;
+    }
+  }
+
+  @keyframes marquee {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+</style>

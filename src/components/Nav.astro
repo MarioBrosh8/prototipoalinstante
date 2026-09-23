@@ -1,0 +1,375 @@
+---
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+import { cta, site } from "../data/site";
+
+const links = [
+  { href: "#imprimimos", label: "Qué hacemos" },
+  { href: "#trabajos", label: "Trabajos" },
+  { href: "#precios", label: "Precios" },
+];
+---
+
+<div class="nav-sentinel" data-nav-sentinel aria-hidden="true"></div>
+<header class="nav" data-nav>
+  <div class="nav__pill">
+    <a class="nav__brand" href="#inicio" aria-label="PROIN, inicio">
+      <span class="nav__mark"><Logo animate /></span>
+      <span class="nav__word">PROIN</span>
+    </a>
+
+    <nav class="nav__links" aria-label="Secciones">
+      {links.map((l) => <a href={l.href} data-nav-link>{l.label}</a>)}
+      <span class="nav__ind" aria-hidden="true" data-nav-ind></span>
+    </nav>
+
+    <div class="nav__end">
+      <a class="nav__ig" href={site.instagram} target="_blank" rel="noopener" aria-label="Instagram de PROIN">
+        <Icon name="instagram-logo" size={22} />
+      </a>
+      <a class="btn btn--sm" href={site.dm} target="_blank" rel="noopener">
+        {cta.contact}
+        <span class="btn__icon"><Icon name="paper-plane-tilt" size={16} /></span>
+      </a>
+      <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+        <span class="sr-only" data-menu-label>Abrir menú</span>
+        <span class="burger" aria-hidden="true"><span></span><span></span></span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="menu" id="menu" data-menu hidden>
+  <nav class="menu__inner wrap" aria-label="Menú">
+    <ul class="menu__list">
+      {
+        links.map((l, i) => (
+          <li style={`--i:${i}`}>
+            <a href={l.href} data-menu-link>
+              {l.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+    <div class="menu__foot" style={`--i:${links.length}`}>
+      <a class="btn" href={site.dm} target="_blank" rel="noopener">
+        {cta.contact}
+        <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+      </a>
+      <a class="menu__ig" href={site.instagram} target="_blank" rel="noopener">
+        <Icon name="instagram-logo" size={20} />
+        {site.handle}
+      </a>
+      <p class="menu__meta">{site.location}. Envíos a {site.areaServed}.</p>
+    </div>
+  </nav>
+</div>
+
+<style>
+  .nav-sentinel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 24px;
+    pointer-events: none;
+  }
+
+  .nav {
+    position: fixed;
+    z-index: 40;
+    top: max(12px, env(safe-area-inset-top));
+    left: 50%;
+    width: min(calc(100% - var(--gutter) * 2), 1180px);
+    translate: -50% 0;
+  }
+
+  .nav__pill {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    height: var(--nav-h);
+    padding: 8px 8px 8px 14px;
+    border-radius: var(--radius-pill);
+    background: var(--glass);
+    -webkit-backdrop-filter: blur(18px) saturate(170%);
+    backdrop-filter: blur(18px) saturate(170%);
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      inset 0 1px 0 0 var(--inner-highlight);
+    transition: box-shadow 300ms ease;
+  }
+
+  .nav.is-scrolled .nav__pill {
+    box-shadow:
+      inset 0 0 0 1px var(--line),
+      inset 0 1px 0 0 var(--inner-highlight),
+      0 18px 40px -24px var(--shadow-color);
+  }
+
+  .nav__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 4px 4px;
+    border-radius: var(--radius-pill);
+  }
+
+  .nav__mark {
+    display: block;
+    height: 38px;
+  }
+
+  .nav__word {
+    font-weight: 800;
+    font-size: 1.25rem;
+    letter-spacing: -0.02em;
+  }
+
+  .nav__links {
+    position: relative;
+    display: none;
+    gap: 4px;
+  }
+
+  .nav__links a {
+    position: relative;
+    padding: 10px 14px;
+    border-radius: var(--radius-pill);
+    font-weight: 550;
+    font-size: 0.98rem;
+    color: var(--ink-2);
+    transition: color 200ms ease;
+  }
+
+  .nav__links a[aria-current="true"] {
+    color: var(--ink);
+  }
+
+  /* The active link gets a filament-coloured line that slides between links. */
+  .nav__ind {
+    position: absolute;
+    left: 0;
+    bottom: 3px;
+    width: 100px;
+    height: 2px;
+    border-radius: 2px;
+    background: var(--brand);
+    transform-origin: 0 50%;
+    transform: translateX(var(--x, 0px)) scaleX(var(--w, 0));
+    opacity: var(--o, 0);
+    transition:
+      transform 420ms var(--ease-drawer),
+      opacity 200ms ease;
+  }
+
+  .nav__end {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nav__ig {
+    display: none;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radius-pill);
+    color: var(--ink-2);
+    transition:
+      color 200ms ease,
+      background-color 200ms ease,
+      transform 160ms var(--ease-out);
+  }
+
+  .nav__ig:active {
+    transform: scale(0.94);
+  }
+
+  :global(.btn.btn--sm) {
+    min-height: 46px;
+    padding: 4px 4px 4px 18px;
+    font-size: 0.95rem;
+    gap: 10px;
+  }
+
+  :global(.btn.btn--sm .btn__icon) {
+    width: 38px;
+    height: 38px;
+  }
+
+  .nav__toggle {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: var(--radius-pill);
+    color: var(--ink);
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .nav__toggle:active {
+    transform: scale(0.94);
+  }
+
+  .burger {
+    position: relative;
+    width: 20px;
+    height: 12px;
+  }
+
+  .burger span {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    border-radius: 2px;
+    background: currentColor;
+    transition: transform 380ms var(--ease-drawer);
+  }
+
+  .burger span:first-child {
+    top: 0;
+  }
+
+  .burger span:last-child {
+    bottom: 0;
+  }
+
+  .nav__toggle[aria-expanded="true"] .burger span:first-child {
+    transform: translateY(5px) rotate(45deg);
+  }
+
+  .nav__toggle[aria-expanded="true"] .burger span:last-child {
+    transform: translateY(-5px) rotate(-45deg);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .nav__links a:hover {
+      color: var(--ink);
+    }
+
+    .nav__ig:hover {
+      color: var(--ink);
+      background: var(--brand-wash);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .nav__links {
+      display: flex;
+    }
+
+    .nav__ig {
+      display: grid;
+    }
+
+    .nav__toggle {
+      display: none;
+    }
+  }
+
+  /* Phones: the nav CTA drops its icon circle so the wordmark still fits. */
+  @media (max-width: 480px) {
+    .nav__end :global(.btn.btn--sm) {
+      padding: 4px 16px;
+    }
+
+    .nav__end :global(.btn.btn--sm .btn__icon) {
+      display: none;
+    }
+  }
+
+  @media (max-width: 339px) {
+    .nav__word {
+      display: none;
+    }
+  }
+
+  /* Full-screen menu for small screens. */
+  .menu {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+    padding-top: calc(var(--nav-h) + max(12px, env(safe-area-inset-top)) + 28px);
+    padding-bottom: max(24px, env(safe-area-inset-bottom));
+    /* Nearly opaque: a full-screen menu over busy content must stay legible. */
+    background: color-mix(in srgb, var(--bg) 93%, transparent);
+    -webkit-backdrop-filter: blur(20px) saturate(140%);
+    backdrop-filter: blur(20px) saturate(140%);
+    opacity: 0;
+    transition: opacity 260ms ease;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .menu.is-open {
+    opacity: 1;
+  }
+
+  .menu__inner {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    min-height: 100%;
+    gap: 40px;
+  }
+
+  .menu__list a {
+    display: block;
+    padding: 10px 0;
+    font-size: clamp(2.4rem, 11vw, 3.4rem);
+    font-weight: 720;
+    letter-spacing: -0.035em;
+    line-height: 1.05;
+  }
+
+  .menu__list li,
+  .menu__foot {
+    opacity: 0;
+    transform: translateY(28px);
+    transition:
+      opacity 420ms var(--ease-out),
+      transform 520ms var(--ease-drawer);
+    transition-delay: calc(60ms + var(--i) * 55ms);
+  }
+
+  .menu.is-open .menu__list li,
+  .menu.is-open .menu__foot {
+    opacity: 1;
+    transform: none;
+  }
+
+  .menu__foot {
+    display: grid;
+    gap: 18px;
+    justify-items: start;
+  }
+
+  .menu__ig {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--ink-2);
+  }
+
+  .menu__meta {
+    font-size: 0.95rem;
+    color: var(--ink-3);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .menu__list li,
+    .menu__foot {
+      transform: none;
+    }
+
+    .burger span,
+    .nav__ind {
+      transition-duration: 0ms;
+    }
+  }
+</style>

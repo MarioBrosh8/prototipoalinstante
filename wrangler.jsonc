@@ -1,0 +1,19 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "prototipoalinstante",
+  "compatibility_date": "2026-09-22",
+
+  // Pure static-asset Worker: no script. Cloudflare serves dist/ from the edge.
+  // public/_headers sets caching and security headers for these assets.
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  },
+
+  // Subdomain of the mariovaldez.dev zone. custom_domain creates the DNS
+  // record and certificate on first deploy.
+  "routes": [{ "pattern": "prototipoalinstante.mariovaldez.dev", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false
+}

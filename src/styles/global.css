@@ -1,0 +1,513 @@
+/*
+  PROIN design tokens.
+
+  Palette: one accent, PROIN's violet, sampled from their Instagram covers
+  (#8a3bc1) and slides (#500589). Neutrals are violet-tinted so the whole page
+  reads as one family in both schemes. Every text token below passes WCAG AA on
+  --bg; white text on --brand is 6:1.
+
+  Shape rule: interactive controls are pills, panels are 28px outer / 20px
+  inner (double bezel), inputs are 14px. Nothing else.
+*/
+
+@font-face {
+  font-family: "Bricolage";
+  src: url("/fonts/bricolage-grotesque-es.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* Arial tuned to Bricolage's metrics so the swap barely moves the layout. */
+@font-face {
+  font-family: "Bricolage Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("Roboto");
+  size-adjust: 100.2%;
+  ascent-override: 92.8%;
+  descent-override: 26.9%;
+  line-gap-override: 0%;
+}
+
+:root {
+  color-scheme: light dark;
+
+  --font-sans: "Bricolage", "Bricolage Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "Cascadia Mono", Consolas, monospace;
+
+  --brand: #8a3bc1;
+  --brand-hover: #9a4fd0;
+  --brand-deep: #500589;
+  --on-brand: #fdfbff;
+  --accent-text: light-dark(#6f24a8, #c39af0);
+  --brand-wash: light-dark(#eadff7, #231433);
+  --logo-ink: light-dark(#7d33b3, #a45ad8);
+  --logo-light: light-dark(#b98ae8, #d2b1f3);
+
+  --bg: light-dark(#f6f2fb, #0d0a12);
+  --bg-raised: light-dark(#fdfbff, #16111e);
+  --bg-sunken: light-dark(#ede5f7, #09070d);
+  --ink: light-dark(#1a1224, #f3eefa);
+  --ink-2: light-dark(#4e4460, #b7acc9);
+  --ink-3: light-dark(#6e6480, #8c809e);
+  --line: light-dark(rgb(40 16 70 / 0.12), rgb(233 222 255 / 0.1));
+  --line-strong: light-dark(rgb(40 16 70 / 0.22), rgb(233 222 255 / 0.2));
+  --glass: light-dark(rgb(253 251 255 / 0.72), rgb(22 17 30 / 0.66));
+  --shadow-color: light-dark(rgb(58 20 96 / 0.16), rgb(4 2 8 / 0.55));
+  --inner-highlight: light-dark(rgb(255 255 255 / 0.9), rgb(255 255 255 / 0.07));
+
+  --radius-panel: 28px;
+  --radius-inner: 20px;
+  --radius-input: 14px;
+  --radius-pill: 999px;
+
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+
+  /* PROIN's Instagram backgrounds tile their mark: hotend and eye. */
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='%23fff' fill-opacity='.1'%3E%3Crect x='9' y='9' width='26' height='13' rx='3'/%3E%3Cpath d='M15 22h14v5a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.1' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M50 64c9-9 23-9 32 0c-9 9-23 9-32 0z'/%3E%3Ccircle cx='66' cy='64' r='4.5'/%3E%3C/g%3E%3C/svg%3E");
+
+  --gutter: clamp(16px, 4vw, 40px);
+  --maxw: 1240px;
+  --nav-h: 64px;
+  --section-y: clamp(88px, 12vw, 168px);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Component display rules must never un-hide something marked [hidden]. */
+[hidden] {
+  display: none !important;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--nav-h) + 32px);
+  background: var(--bg);
+}
+
+body {
+  margin: 0;
+  min-height: 100svh;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: clip;
+}
+
+img,
+svg,
+canvas,
+video {
+  display: block;
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* <picture> only picks the format; the <img> inside does the layout. */
+picture {
+  display: contents;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure {
+  margin: 0;
+}
+
+ul,
+ol {
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+button,
+a,
+[role="button"],
+[role="tab"] {
+  touch-action: manipulation;
+}
+
+button,
+[role="button"],
+[role="tab"],
+.btn {
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 3px;
+  border-radius: 6px;
+}
+
+::selection {
+  background: var(--brand);
+  color: var(--on-brand);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: fixed;
+  left: 12px;
+  top: 12px;
+  z-index: 100;
+  padding: 10px 16px;
+  border-radius: var(--radius-pill);
+  background: var(--brand);
+  color: var(--on-brand);
+  font-weight: 600;
+  transform: translateY(-160%);
+  transition: transform 200ms var(--ease-out);
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
+/* Layout */
+
+.wrap {
+  width: 100%;
+  max-width: calc(var(--maxw) + var(--gutter) * 2);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+.section {
+  padding-block: var(--section-y);
+}
+
+/* Type */
+
+/* Sized so the longest hero line ("Lo imprimimos.", about 6.3em) stays on
+   one line inside the hero's copy column at every width. */
+.display {
+  font-size: clamp(2.6rem, 5.8vw, 5.2rem);
+  line-height: 0.94;
+  letter-spacing: -0.04em;
+  font-weight: 760;
+  text-wrap: balance;
+}
+
+.h2 {
+  font-size: clamp(2.1rem, 4.4vw, 3.75rem);
+  line-height: 1;
+  letter-spacing: -0.034em;
+  font-weight: 720;
+  text-wrap: balance;
+}
+
+.h3 {
+  font-size: 1.375rem;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+  font-weight: 650;
+}
+
+.lede {
+  font-size: clamp(1.0625rem, 1.3vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 46ch;
+  text-wrap: pretty;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-text);
+}
+
+/* Buttons: pill, press feedback on pointer-down, hover gated to fine pointers. */
+
+.btn {
+  --btn-bg: var(--brand);
+  --btn-ink: var(--on-brand);
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 52px;
+  padding: 6px 6px 6px 22px;
+  border-radius: var(--radius-pill);
+  background: var(--btn-bg);
+  color: var(--btn-ink);
+  font-weight: 650;
+  font-size: 1rem;
+  line-height: 1;
+  white-space: nowrap;
+  box-shadow:
+    0 1px 0 0 rgb(255 255 255 / 0.18) inset,
+    0 10px 24px -12px var(--shadow-color);
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn__icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background: rgb(255 255 255 / 0.16);
+  transition: transform 260ms var(--ease-out);
+}
+
+.btn--ghost {
+  --btn-bg: transparent;
+  --btn-ink: var(--ink);
+  padding: 6px 22px 6px 18px;
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+}
+
+.btn--ghost .btn__icon {
+  width: auto;
+  height: auto;
+  background: none;
+}
+
+.btn--light {
+  --btn-bg: #fdfbff;
+  --btn-ink: #3b0a66;
+}
+
+.btn--light .btn__icon {
+  background: rgb(80 5 137 / 0.1);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn:hover {
+    --btn-bg: var(--brand-hover);
+  }
+
+  .btn:hover .btn__icon {
+    transform: translate(2px, -2px) scale(1.04);
+  }
+
+  .btn--ghost:hover {
+    --btn-bg: var(--brand-wash);
+  }
+
+  .btn--light:hover {
+    --btn-bg: #ffffff;
+  }
+}
+
+/* Round icon button (gallery arrows, copy). */
+.round {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-pill);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line-strong);
+  transition:
+    transform 160ms var(--ease-out),
+    background-color 200ms ease,
+    opacity 200ms ease;
+}
+
+.round:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
+.round:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .round:hover:not(:disabled) {
+    background: var(--brand-wash);
+  }
+}
+
+/* Double bezel: an outer tray and an inner core with concentric radii. */
+
+.bezel {
+  padding: 8px;
+  border-radius: var(--radius-panel);
+  background: light-dark(rgb(40 16 70 / 0.04), rgb(233 222 255 / 0.035));
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    0 30px 60px -40px var(--shadow-color);
+}
+
+.bezel__core {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-inner);
+  background: var(--bg-raised);
+  box-shadow: inset 0 1px 0 0 var(--inner-highlight);
+}
+
+/*
+  Reveal on scroll. Only elements that start below the fold get the .pre
+  class (from JS), so nothing on screen ever flashes and the page is fully
+  readable without JS. Hiding is instant; the reveal runs once.
+*/
+
+[data-reveal].pre {
+  opacity: 0;
+  transform: translateY(26px);
+  filter: blur(6px);
+}
+
+[data-reveal].pre.is-in {
+  opacity: 1;
+  transform: none;
+  filter: none;
+  transition:
+    opacity 700ms var(--ease-out),
+    transform 900ms var(--ease-out),
+    filter 700ms var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 70ms);
+}
+
+/*
+  "Printed" reveal for photos: the image builds up from the bottom in
+  discrete layers, like a print, with a hot line riding the top edge.
+*/
+
+[data-print] {
+  --p: 1;
+}
+
+[data-print].pre {
+  --p: 0;
+}
+
+[data-print] .print-layer {
+  clip-path: inset(calc((1 - var(--p)) * 100%) 0 0 0);
+}
+
+[data-print].pre.is-in {
+  animation: print-rise 1100ms steps(22, end) forwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+[data-print] .print-line {
+  position: absolute;
+  inset-inline: 0;
+  bottom: calc(var(--p) * 100%);
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #ffb070 20%, #fff1e0 50%, #ffb070 80%, transparent);
+  box-shadow: 0 0 14px 2px rgb(255 140 60 / 0.55);
+  opacity: 0;
+  pointer-events: none;
+}
+
+[data-print].pre.is-in .print-line {
+  animation: print-line 1100ms linear forwards;
+  animation-delay: calc(var(--i, 0) * 90ms);
+}
+
+@property --p {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@keyframes print-rise {
+  to {
+    --p: 1;
+  }
+}
+
+@keyframes print-line {
+  0%,
+  96% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-reveal].pre {
+    transform: none;
+    filter: none;
+  }
+
+  [data-reveal].pre.is-in {
+    transition: opacity 300ms ease;
+  }
+
+  [data-print].pre {
+    --p: 1;
+  }
+
+  [data-print].pre.is-in,
+  [data-print].pre.is-in .print-line {
+    animation: none;
+  }
+}

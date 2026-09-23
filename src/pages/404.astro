@@ -1,0 +1,54 @@
+---
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import Logo from "../components/Logo.astro";
+import { cta, site } from "../data/site";
+---
+
+<Base title="Página no encontrada | PROIN" noindex>
+  <main id="contenido" class="lost">
+    <span class="lost__mark"><Logo animate /></span>
+    <h1 class="h2">Esta página no salió de la impresora.</h1>
+    <p class="lede">Puede que el enlace esté mal escrito o que la página ya no exista.</p>
+    <div class="lost__ctas">
+      <a class="btn" href="/">
+        Ir al inicio
+        <span class="btn__icon"><Icon name="arrow-right" size={18} /></span>
+      </a>
+      <a class="btn btn--ghost" href={site.dm} target="_blank" rel="noopener">
+        <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+        {cta.contact}
+      </a>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .lost {
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 22px;
+    min-height: 100svh;
+    padding: var(--gutter);
+    text-align: center;
+  }
+
+  .lost__mark {
+    display: block;
+    height: 120px;
+    margin-bottom: 12px;
+  }
+
+  .lost .lede {
+    margin-inline: auto;
+  }
+
+  .lost__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+  }
+</style>

@@ -1,0 +1,302 @@
+---
+import Photo from "./Photo.astro";
+import { categorias } from "../data/site";
+---
+
+<section class="section cats" id="imprimimos" aria-labelledby="cats-title">
+  <div class="wrap">
+    <header class="cats__head">
+      <h2 id="cats-title" class="h2" data-reveal>De un llavero a una maqueta completa.</h2>
+      <p class="lede" data-reveal style="--i:1">
+        Esto es lo que más nos piden. Si tu idea no está en la lista, cuéntanos y lo vemos.
+      </p>
+    </header>
+
+    <div class="cats__body" data-cats data-pieces={JSON.stringify(categorias.map((c) => c.pieza))}>
+      <ul class="cats__list">
+        {
+          categorias.map((c, i) => (
+            <li data-reveal style={`--i:${i}`}>
+              <button
+                type="button"
+                class="cat"
+                data-cat={c.id}
+                aria-pressed={i === 0 ? "true" : "false"}
+                aria-controls="cats-preview"
+              >
+                <span class="cat__thumb" aria-hidden="true">
+                  <Photo src={c.foto} alt="" thumb />
+                </span>
+                <span class="cat__copy">
+                  <span class="cat__title">{c.titulo}</span>
+                  <span class="cat__more">
+                    <span class="cat__text">{c.texto}</span>
+                  </span>
+                </span>
+                <span class="cat__rule" aria-hidden="true" />
+              </button>
+            </li>
+          ))
+        }
+      </ul>
+
+      <figure class="cats__preview" id="cats-preview">
+        <div class="bezel">
+          <div class="bezel__core cats__frame">
+            {
+              categorias.map((c, i) => (
+                <div class:list={["cats__img", { "is-active": i === 0 }]} data-cat-img={c.id}>
+                  <div class="print-layer">
+                    <Photo src={c.foto} alt={c.alt} />
+                  </div>
+                  <span class="print-line" aria-hidden="true" />
+                </div>
+              ))
+            }
+          </div>
+        </div>
+        <figcaption class="cats__caption" data-cat-caption aria-live="polite">{categorias[0].pieza}</figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cats__head {
+    display: grid;
+    gap: 18px;
+    max-width: 760px;
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+
+  .cats__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    gap: clamp(32px, 5vw, 80px);
+    align-items: start;
+  }
+
+  .cats__list {
+    display: grid;
+  }
+
+  .cat {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    width: 100%;
+    padding: 20px 0 22px;
+    text-align: left;
+    border-radius: 0;
+  }
+
+  .cat::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: var(--line);
+  }
+
+  .cat__thumb {
+    display: none;
+  }
+
+  .cat__copy {
+    display: grid;
+    gap: 0;
+    min-width: 0;
+  }
+
+  .cat__title {
+    font-size: clamp(1.45rem, 2.4vw, 2rem);
+    font-weight: 700;
+    letter-spacing: -0.028em;
+    line-height: 1.1;
+    color: var(--ink-3);
+    transition: color 260ms ease;
+  }
+
+  /* Description opens like an accordion for the active category. */
+  .cat__more {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 420ms var(--ease-drawer);
+  }
+
+  .cat__text {
+    overflow: hidden;
+    min-height: 0;
+    color: var(--ink-2);
+    max-width: 42ch;
+    opacity: 0;
+    transition: opacity 260ms ease;
+  }
+
+  /* A filament line runs along the active item, like a fresh extrusion. */
+  .cat__rule {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--brand), #ffb070);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    transition: transform 620ms var(--ease-drawer);
+  }
+
+  .cat[aria-pressed="true"] .cat__title {
+    color: var(--ink);
+  }
+
+  .cat[aria-pressed="true"] .cat__more {
+    grid-template-rows: 1fr;
+  }
+
+  .cat[aria-pressed="true"] .cat__text {
+    opacity: 1;
+    padding-top: 10px;
+    transition-delay: 120ms;
+  }
+
+  .cat[aria-pressed="true"] .cat__rule {
+    transform: scaleX(1);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .cat:hover .cat__title {
+      color: var(--ink);
+    }
+  }
+
+  .cats__preview {
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+    display: grid;
+    gap: 14px;
+  }
+
+  .cats__frame {
+    aspect-ratio: 4 / 4.6;
+    background: var(--bg-sunken);
+  }
+
+  .cats__img {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    --p: 1;
+  }
+
+  .cats__img :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .cats__img .print-layer {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(calc((1 - var(--p)) * 100%) 0 0 0);
+  }
+
+  .cats__img.is-active {
+    opacity: 1;
+    z-index: 2;
+  }
+
+  .cats__img.was-active {
+    opacity: 1;
+    z-index: 1;
+  }
+
+  .cats__img.is-printing {
+    --p: 0;
+    animation: print-rise 760ms steps(18, end) forwards;
+  }
+
+  .cats__img .print-line {
+    position: absolute;
+    inset-inline: 0;
+    bottom: calc(var(--p) * 100%);
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ffb070 20%, #fff1e0 50%, #ffb070 80%, transparent);
+    box-shadow: 0 0 14px 2px rgb(255 140 60 / 0.55);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .cats__img.is-printing .print-line {
+    animation: print-line 760ms linear forwards;
+  }
+
+  .cats__caption {
+    font-size: 0.95rem;
+    color: var(--ink-3);
+    padding-left: 8px;
+  }
+
+  @media (max-width: 959px) {
+    .cats__body {
+      grid-template-columns: 1fr;
+    }
+
+    .cats__preview {
+      display: none;
+    }
+
+    .cat {
+      align-items: center;
+      padding: 16px 0;
+    }
+
+    .cat__thumb {
+      display: block;
+      flex-shrink: 0;
+      width: 84px;
+      aspect-ratio: 4 / 5;
+      border-radius: 14px;
+      overflow: hidden;
+      background: var(--bg-sunken);
+    }
+
+    .cat__thumb :global(img) {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cat__title {
+      color: var(--ink);
+      font-size: 1.3rem;
+    }
+
+    .cat__more {
+      grid-template-rows: 1fr;
+    }
+
+    .cat__text {
+      opacity: 1;
+      padding-top: 6px;
+      font-size: 0.98rem;
+    }
+
+    .cat__rule {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .cats__img.is-printing {
+      animation: none;
+      --p: 1;
+    }
+
+    .cat__more,
+    .cat__rule {
+      transition: none;
+    }
+  }
+</style>

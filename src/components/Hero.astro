@@ -1,0 +1,645 @@
+---
+import { getImage, Image } from "astro:assets";
+import Icon from "./Icon.astro";
+import { cta, site } from "../data/site";
+import { DEFAULT_FILAMENT, FILAMENTS } from "../scripts/filaments";
+import lamparaEsfera from "../assets/trabajos/lampara-esfera.jpg";
+
+// Shown instead of the 3D print when WebGL isn't available.
+const poster = await getImage({ src: lamparaEsfera, width: 640, format: "webp", quality: 72 });
+const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? "";
+---
+
+<section class="hero" id="inicio" aria-labelledby="hero-title">
+  <div class="wrap hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow hero__in" style="--d:0">
+        <Icon name="map-pin" size={16} />
+        Impresión 3D en Neza y CDMX
+      </p>
+      <h1 id="hero-title" class="display hero__title">
+        <span class="hero__line" style="--d:0"><span class="hero__ink">Lo imaginas.</span></span>
+        <span class="hero__line" style="--d:1"><span class="hero__ink">Lo <em>imprimimos.</em></span></span>
+      </h1>
+      <p class="lede hero__in" style="--d:3">
+        Diseñamos desde cero o imprimimos tu archivo: lámparas, trofeos, llaveros para tu negocio, maquetas y más.
+      </p>
+      <div class="hero__ctas hero__in" style="--d:4">
+        <a class="btn" href={site.dm} target="_blank" rel="noopener" data-magnetic>
+          {cta.contact}
+          <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+        </a>
+        <a class="btn btn--ghost" href={site.instagram} target="_blank" rel="noopener">
+          <span class="btn__icon"><Icon name="instagram-logo" size={20} /></span>
+          {cta.instagram}
+        </a>
+      </div>
+    </div>
+
+    <div class="hero__stage bezel hero__in" style="--d:2" data-printer-ui>
+      <div class="bezel__core chamber" data-printer data-poster={poster.src}>
+        <div
+          class="chamber__canvas"
+          data-canvas
+          data-stage
+          tabindex="0"
+          role="group"
+          aria-roledescription="visor 3D"
+          aria-label="Lámpara esférica imprimiéndose en 3D. Arrastra o usa las flechas para girarla."
+        >
+        </div>
+
+        <noscript>
+          <Image
+            class="chamber__poster"
+            src={lamparaEsfera}
+            widths={[480, 640]}
+            sizes="(min-width: 960px) 40vw, 90vw"
+            alt="Lámpara esférica de celosía impresa por PROIN, encendida"
+          />
+        </noscript>
+
+        <div class="loader" aria-hidden="true">
+          <div class="loader__track">
+            <span class="loader__line"></span>
+            <span class="loader__head">
+              <svg viewBox="0 0 330 280" width="30" height="26">
+                <rect x="4" y="4" width="322" height="160" rx="26" fill="#8a3bc1"></rect>
+                <rect x="38" y="28" width="254" height="72" rx="8" fill="#b98ae8"></rect>
+                <path d="M69 164 H260 V224 Q260 274 210 274 H119 Q69 274 69 224 Z" fill="#8a3bc1"></path>
+              </svg>
+            </span>
+          </div>
+          <p class="loader__text">Calentando la boquilla…</p>
+        </div>
+
+        <div class="hud">
+          <p class="hud__status"><span class="hud__dot" aria-hidden="true"></span><span data-hud-status role="status">Calentando la boquilla</span></p>
+          <p class="hud__layer" aria-hidden="true">
+            <span data-hud-layer>Capa 0 de 900</span>
+            <span class="hud__track"><span class="hud__bar" data-hud-bar></span></span>
+            <span class="hud__fil">Filamento: <span data-hud-filament>{defaultName}</span></span>
+          </p>
+        </div>
+
+        <p class="chamber__hint" data-hint aria-hidden="true">
+          <Icon name="hand-grabbing" size={16} />
+          Arrastra para girar
+        </p>
+
+      </div>
+      <div class="controls">
+        <div class="swatches" role="radiogroup" aria-label="Color del filamento">
+          {
+            FILAMENTS.map((f) => (
+              <button
+                type="button"
+                role="radio"
+                class="swatch"
+                data-filament={f.id}
+                aria-checked={f.id === DEFAULT_FILAMENT ? "true" : "false"}
+                tabindex={f.id === DEFAULT_FILAMENT ? 0 : -1}
+                aria-label={f.name}
+                title={f.name}
+                style={`--c:${f.color}`}
+              />
+            ))
+          }
+        </div>
+        <div class="controls__actions">
+          <button type="button" class="chip" data-light aria-pressed="false">
+            <Icon name="lightbulb" size={18} />
+            <span data-light-label>Encender</span>
+          </button>
+          <button type="button" class="chip chip--icon" data-replay aria-label="Imprimir de nuevo" title="Imprimir de nuevo">
+            <Icon name="arrow-clockwise" size={18} />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: center;
+    min-height: 100svh;
+    padding-top: calc(var(--nav-h) + max(12px, env(safe-area-inset-top)) + clamp(28px, 5vh, 64px));
+    padding-bottom: clamp(40px, 7vh, 88px);
+  }
+
+  .hero__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+    align-items: center;
+    gap: clamp(32px, 5vw, 80px);
+  }
+
+  .hero__copy {
+    display: grid;
+    gap: 26px;
+    justify-items: start;
+  }
+
+  .hero__title {
+    margin-block: 4px 2px;
+  }
+
+  .hero__line {
+    display: block;
+    position: relative;
+  }
+
+  .hero__ink {
+    display: inline-block;
+    padding: 0 0.06em 0.14em;
+    margin: 0 -0.06em -0.14em;
+  }
+
+  .hero__title em {
+    font-style: normal;
+    color: var(--accent-text);
+  }
+
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 6px;
+  }
+
+  /* The print chamber: always a dim enclosure, in either theme, so the lamp's
+     light reads. Its colours match the WebGL room for a seamless hand-off. */
+  .chamber {
+    aspect-ratio: 1 / 1.04;
+    isolation: isolate;
+    color: #f3eefa;
+    background:
+      radial-gradient(120% 70% at 50% 18%, #2a1a3d 0%, transparent 60%),
+      linear-gradient(180deg, #1d1229 0%, #120b1b 100%);
+  }
+
+  .chamber__canvas {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    border-radius: inherit;
+    outline-offset: -4px;
+  }
+
+  .chamber__canvas :global(canvas) {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: opacity 700ms var(--ease-out);
+    cursor: grab;
+  }
+
+  :global(.is-ready) .chamber__canvas :global(canvas) {
+    opacity: 1;
+  }
+
+  :global(.is-dragging) .chamber__canvas :global(canvas) {
+    cursor: grabbing;
+  }
+
+  .chamber :global(.chamber__poster) {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Loader: a tiny hotend laying down a line, while three.js arrives. */
+  .loader {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 14px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 400ms ease;
+  }
+
+  :global(.is-loading) .loader {
+    opacity: 1;
+  }
+
+  :global(.is-ready) .loader,
+  :global(.is-failed) .loader {
+    opacity: 0;
+  }
+
+  .loader__track {
+    position: relative;
+    width: 132px;
+    height: 34px;
+  }
+
+  .loader__line {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #b98ae8;
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+
+  .loader__head {
+    position: absolute;
+    left: -15px;
+    bottom: 5px;
+  }
+
+  .loader__text {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    color: rgb(243 238 250 / 0.72);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    :global(.is-loading) .loader__line {
+      animation: extrude 1.4s var(--ease-in-out) infinite;
+    }
+
+    :global(.is-loading) .loader__head {
+      animation: sweep 1.4s var(--ease-in-out) infinite;
+    }
+  }
+
+  @keyframes extrude {
+    0% {
+      transform: scaleX(0);
+      opacity: 1;
+    }
+    80% {
+      transform: scaleX(1);
+      opacity: 1;
+    }
+    100% {
+      transform: scaleX(1);
+      opacity: 0;
+    }
+  }
+
+  @keyframes sweep {
+    0% {
+      transform: translateX(0);
+    }
+    80%,
+    100% {
+      transform: translateX(132px);
+    }
+  }
+
+  /* HUD and controls: glass over the dark chamber. Hidden until the scene runs. */
+  .hud,
+  .controls,
+  .chamber__hint {
+    position: absolute;
+    z-index: 2;
+    opacity: 0;
+    transform: translateY(6px);
+    transition:
+      opacity 500ms var(--ease-out),
+      transform 600ms var(--ease-out);
+    pointer-events: none;
+  }
+
+  :global(.is-ready) .hud,
+  :global(.is-ready) .controls,
+  :global(.is-ready) .chamber__hint {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .hud {
+    top: 14px;
+    left: 14px;
+    display: grid;
+    gap: 6px;
+    padding: 10px 14px 11px;
+    border-radius: 16px;
+    background: rgb(20 13 30 / 0.55);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    box-shadow: inset 0 0 0 1px rgb(233 222 255 / 0.1);
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hud__status {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    color: #f3eefa;
+  }
+
+  /* Semantic state: glows orange while the nozzle is hot. */
+  .hud__dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #ff8a3a;
+    box-shadow: 0 0 10px 1px rgb(255 138 58 / 0.7);
+  }
+
+  .hud__layer {
+    display: grid;
+    gap: 6px;
+    color: rgb(243 238 250 / 0.7);
+  }
+
+  .hud__track {
+    display: block;
+    width: 150px;
+    height: 2px;
+    border-radius: 2px;
+    background: rgb(233 222 255 / 0.14);
+    overflow: hidden;
+  }
+
+  .hud__bar {
+    display: block;
+    height: 100%;
+    background: linear-gradient(90deg, #b98ae8, #ffb070);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+  }
+
+  .chamber__hint {
+    left: 50%;
+    bottom: 78px;
+    translate: -50% 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 12px;
+    border-radius: var(--radius-pill);
+    background: rgb(20 13 30 / 0.5);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    font-size: 0.8rem;
+    color: rgb(243 238 250 / 0.8);
+    white-space: nowrap;
+  }
+
+  :global(.is-ready) .chamber__hint:global(.is-gone) {
+    opacity: 0;
+    transform: translateY(4px);
+    pointer-events: none;
+  }
+
+  .hero__stage {
+    position: relative;
+  }
+
+  /* Overlaid on the chamber on larger screens; its own row on phones. */
+  .controls {
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 8px 8px 8px 12px;
+    border-radius: var(--radius-pill);
+    background: rgb(20 13 30 / 0.58);
+    -webkit-backdrop-filter: blur(14px) saturate(150%);
+    backdrop-filter: blur(14px) saturate(150%);
+    box-shadow: inset 0 0 0 1px rgb(233 222 255 / 0.1);
+  }
+
+  .swatches {
+    display: flex;
+    gap: 4px;
+  }
+
+  .swatch {
+    position: relative;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    transition: transform 160ms var(--ease-out);
+  }
+
+  .swatch::before {
+    content: "";
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--c);
+    box-shadow:
+      inset 0 0 0 1px rgb(255 255 255 / 0.22),
+      inset 0 -3px 5px rgb(0 0 0 / 0.25);
+    transition: transform 220ms var(--ease-out);
+  }
+
+  .swatch::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px #f3eefa;
+    opacity: 0;
+    transform: scale(0.85);
+    transition:
+      opacity 200ms ease,
+      transform 260ms var(--ease-out);
+  }
+
+  .swatch[aria-checked="true"]::after {
+    opacity: 1;
+    transform: none;
+  }
+
+  .swatch:active {
+    transform: scale(0.9);
+  }
+
+  .hud__fil {
+    color: rgb(243 238 250 / 0.7);
+  }
+
+  .hud__fil span {
+    color: #f3eefa;
+  }
+
+  .controls__actions {
+    display: flex;
+    gap: 6px;
+  }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    height: 38px;
+    padding: 0 14px 0 11px;
+    border-radius: var(--radius-pill);
+    background: rgb(233 222 255 / 0.1);
+    color: #f3eefa;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 200ms ease,
+      color 200ms ease;
+  }
+
+  .chip:active {
+    transform: scale(0.95);
+  }
+
+  .chip[aria-pressed="true"] {
+    background: #ffb468;
+    color: #2a1406;
+  }
+
+  .chip--icon {
+    width: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .swatch:hover::before {
+      transform: scale(1.12);
+    }
+
+    .chip:hover {
+      background: rgb(233 222 255 / 0.18);
+    }
+
+    .chip[aria-pressed="true"]:hover {
+      background: #ffc27f;
+    }
+  }
+
+  /* Entrance: the headline prints itself line by line; the rest fades up. */
+  @media (prefers-reduced-motion: no-preference) {
+    .hero__in {
+      animation: hero-in 900ms var(--ease-out) both;
+      animation-delay: calc(160ms + var(--d) * 120ms);
+    }
+
+    .hero__line {
+      --p: 0;
+      animation: print-rise 820ms steps(15, end) forwards;
+      animation-delay: calc(180ms + var(--d) * 260ms);
+    }
+
+    .hero__ink {
+      clip-path: inset(calc((1 - var(--p)) * 100%) 0 0 0);
+    }
+
+    .hero__line::after {
+      content: "";
+      position: absolute;
+      left: -0.04em;
+      bottom: calc(var(--p) * 92% + 4%);
+      width: min(100%, 11ch);
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(90deg, transparent, #ffb070 15%, #fff1e0 50%, #ffb070 85%, transparent);
+      box-shadow: 0 0 16px 2px rgb(255 140 60 / 0.6);
+      opacity: 0;
+      animation: print-line 820ms linear forwards;
+      animation-delay: inherit;
+      pointer-events: none;
+    }
+  }
+
+  @keyframes hero-in {
+    from {
+      opacity: 0;
+      transform: translateY(18px);
+      filter: blur(6px);
+    }
+  }
+
+  @media (max-width: 959px) {
+    .hero {
+      min-height: auto;
+    }
+
+    .hero__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .hero__title {
+      font-size: clamp(2.6rem, 13.4vw, 4.6rem);
+    }
+
+    .chamber {
+      aspect-ratio: 1 / 1.08;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .controls {
+      position: static;
+      flex-wrap: wrap;
+      margin-top: 8px;
+      background: #1a1126;
+      -webkit-backdrop-filter: none;
+      backdrop-filter: none;
+    }
+
+    .chamber__hint {
+      bottom: 16px;
+    }
+
+    .swatches {
+      gap: 2px;
+    }
+
+    .swatch {
+      width: 34px;
+      height: 34px;
+    }
+
+    /* Icon-only light toggle on phones; the label stays for screen readers. */
+    .chip[data-light] {
+      width: 38px;
+      padding: 0;
+      justify-content: center;
+    }
+
+    .chip [data-light-label] {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .hud {
+      top: 10px;
+      left: 10px;
+      padding: 8px 12px 9px;
+    }
+
+    .hud__track {
+      width: 120px;
+    }
+  }
+</style>

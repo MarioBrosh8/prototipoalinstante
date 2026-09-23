@@ -1,0 +1,26 @@
+# build output
+dist/
+.astro/
+
+# dependencies
+node_modules/
+
+# local Cloudflare state and anything secret (this repo is public)
+.wrangler/
+.dev.vars
+.dev.vars.*
+.env
+.env.*
+
+# raw photos and video frames used to produce src/assets (large, not needed to build)
+fotos/
+
+# logs
+npm-debug.log*
+*.log
+
+# OS / editors
+.DS_Store
+Thumbs.db
+.vscode/*
+!.vscode/extensions.json

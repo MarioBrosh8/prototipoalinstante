@@ -1,0 +1,488 @@
+---
+import Icon from "./Icon.astro";
+import Logo from "./Logo.astro";
+import { cta, site } from "../data/site";
+
+const archivo = [
+  { value: "si", label: "Sí, tengo" },
+  { value: "no", label: "Necesito diseño" },
+  { value: "nose", label: "No sé" },
+];
+---
+
+<section class="section composer" id="cotiza" aria-labelledby="composer-title">
+  <div class="wrap composer__grid">
+    <div class="composer__main">
+      <h2 id="composer-title" class="h2" data-reveal>Tu cotización empieza con un mensaje.</h2>
+      <p class="lede" data-reveal style="--i:1">
+        Llena lo que sepas y armamos el mensaje con todo lo que necesitamos para cotizar. Tú solo lo pegas en el chat.
+      </p>
+
+      <form class="form" data-composer novalidate data-reveal style="--i:2">
+        <div class="field">
+          <label class="field__label" for="q-que">¿Qué quieres imprimir?</label>
+          <input
+            class="input"
+            id="q-que"
+            name="que"
+            type="text"
+            maxlength="160"
+            autocomplete="off"
+            autocapitalize="sentences"
+            enterkeyhint="next"
+            placeholder="Ej. 50 llaveros con el logo de mi negocio"
+            aria-describedby="q-que-error"
+          />
+          <p class="field__error" id="q-que-error" data-error hidden>
+            <Icon name="warning-circle" size={16} />
+            Cuéntanos al menos qué quieres imprimir.
+          </p>
+        </div>
+
+        <div class="form__row">
+          <div class="field">
+            <label class="field__label" for="q-medidas">Medidas aproximadas</label>
+            <input
+              class="input"
+              id="q-medidas"
+              name="medidas"
+              type="text"
+              maxlength="80"
+              autocomplete="off"
+              enterkeyhint="next"
+              placeholder="Ej. 5 cm de largo"
+              aria-describedby="q-medidas-help"
+            />
+            <p class="field__help" id="q-medidas-help">Si no sabes, déjalo en blanco.</p>
+          </div>
+
+          <div class="field">
+            <label class="field__label" for="q-cantidad">¿Cuántas piezas?</label>
+            <div class="stepper">
+              <button type="button" class="stepper__btn" data-step="-1" aria-label="Una pieza menos">
+                <Icon name="minus" size={18} />
+              </button>
+              <input
+                class="stepper__input"
+                id="q-cantidad"
+                name="cantidad"
+                type="text"
+                inputmode="numeric"
+                pattern="[0-9]*"
+                value="1"
+                autocomplete="off"
+                enterkeyhint="done"
+              />
+              <button type="button" class="stepper__btn" data-step="1" aria-label="Una pieza más">
+                <Icon name="plus" size={18} />
+              </button>
+            </div>
+            <p class="field__help">Tenemos precio por mayoreo.</p>
+          </div>
+        </div>
+
+        <fieldset class="field">
+          <legend class="field__label">¿Tienes archivo STL?</legend>
+          <div class="seg" data-seg>
+            {
+              archivo.map((o) => (
+                <label class="seg__opt">
+                  <input type="radio" name="archivo" value={o.value} checked={o.value === "nose"} />
+                  <span>{o.label}</span>
+                </label>
+              ))
+            }
+            <span class="seg__active" aria-hidden="true" data-seg-active>
+              {archivo.map((o) => <span class="seg__opt"><span>{o.label}</span></span>)}
+            </span>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+
+    <aside class="composer__side" aria-labelledby="preview-title" data-reveal style="--i:3">
+      <div class="bezel">
+        <div class="bezel__core preview">
+          <div class="preview__head">
+            <span class="preview__avatar"><Logo /></span>
+            <span class="preview__who">
+              <strong id="preview-title">Tu mensaje para PROIN</strong>
+              <span>{site.handle}</span>
+            </span>
+          </div>
+          <div class="preview__thread">
+            <p class="bubble" data-preview></p>
+          </div>
+          <div class="preview__actions">
+            <a class="btn" href={site.dm} target="_blank" rel="noopener" data-send data-magnetic>
+              {cta.contact}
+              <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+            </a>
+            <button type="button" class="round copy" data-copy aria-label="Solo copiar el mensaje" title="Solo copiar el mensaje">
+              <span class="copy__icon copy__icon--a"><Icon name="copy" size={20} /></span>
+              <span class="copy__icon copy__icon--b"><Icon name="check" size={20} /></span>
+            </button>
+          </div>
+          <p class="preview__note" data-note role="status">
+            Instagram no deja prellenar mensajes, así que lo copiamos por ti.
+          </p>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<style>
+  .composer__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+    gap: clamp(36px, 6vw, 96px);
+    align-items: start;
+  }
+
+  .composer__main {
+    display: grid;
+    gap: 18px;
+  }
+
+  .form {
+    display: grid;
+    gap: 22px;
+    margin-top: clamp(16px, 3vw, 28px);
+  }
+
+  .form__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+    gap: 18px;
+  }
+
+  .field {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    min-width: 0;
+  }
+
+  .field__label {
+    padding: 0;
+    font-weight: 650;
+    font-size: 0.98rem;
+  }
+
+  .field__help {
+    font-size: 0.88rem;
+    color: var(--ink-3);
+  }
+
+  .field__error {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: light-dark(#b0233f, #ff8fa6);
+  }
+
+  .input,
+  .stepper {
+    width: 100%;
+    min-height: 54px;
+    border-radius: var(--radius-input);
+    background: var(--bg-raised);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    transition: box-shadow 200ms ease;
+  }
+
+  .input {
+    padding: 0 16px;
+    border: 0;
+    font-size: 16px;
+    color: var(--ink);
+  }
+
+  .input::placeholder {
+    color: var(--ink-3);
+    opacity: 1;
+  }
+
+  .input:focus-visible,
+  .stepper:focus-within {
+    outline: none;
+    box-shadow:
+      inset 0 0 0 2px var(--brand),
+      0 0 0 4px var(--brand-wash);
+  }
+
+  .input[aria-invalid="true"] {
+    box-shadow: inset 0 0 0 2px light-dark(#b0233f, #ff8fa6);
+  }
+
+  .stepper {
+    display: grid;
+    grid-template-columns: 50px 1fr 50px;
+    align-items: center;
+  }
+
+  .stepper__btn {
+    display: grid;
+    place-items: center;
+    height: 54px;
+    color: var(--ink-2);
+    transition:
+      transform 140ms var(--ease-out),
+      color 200ms ease;
+  }
+
+  .stepper__btn:active {
+    transform: scale(0.88);
+  }
+
+  .stepper__input {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    background: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 650;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stepper__input:focus-visible {
+    outline: none;
+  }
+
+  /* Segmented control: a clipped "active" copy slides between options. */
+  .seg {
+    position: relative;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: var(--radius-pill);
+    background: var(--bg-raised);
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    width: fit-content;
+    max-width: 100%;
+  }
+
+  .seg__opt {
+    position: relative;
+    display: grid;
+  }
+
+  .seg__opt input {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    margin: 0;
+    cursor: pointer;
+  }
+
+  .seg__opt span {
+    display: grid;
+    place-items: center;
+    min-height: 44px;
+    padding: 0 18px;
+    border-radius: var(--radius-pill);
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--ink-2);
+    white-space: nowrap;
+  }
+
+  .seg__opt:has(input:focus-visible) span {
+    outline: 2px solid var(--accent-text);
+    outline-offset: 2px;
+  }
+
+  .seg__active {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    border-radius: inherit;
+    background: var(--brand);
+    pointer-events: none;
+    clip-path: inset(0 100% 0 0 round 999px);
+    transition: clip-path 320ms var(--ease-in-out);
+  }
+
+  .seg__active .seg__opt span {
+    color: var(--on-brand);
+  }
+
+  /* Preview of the DM, rendered from the form as you type. */
+  .composer__side {
+    position: sticky;
+    top: calc(var(--nav-h) + 40px);
+  }
+
+  .preview {
+    display: grid;
+    gap: 18px;
+    padding: 20px;
+  }
+
+  .preview__head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+
+  .preview__avatar {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: light-dark(#e7e1ee, #2a2233);
+  }
+
+  .preview__avatar :global(.logo) {
+    height: 30px;
+  }
+
+  .preview__who {
+    display: grid;
+    line-height: 1.25;
+  }
+
+  .preview__who span {
+    font-size: 0.88rem;
+    color: var(--ink-3);
+  }
+
+  .preview__thread {
+    display: flex;
+    justify-content: flex-end;
+    min-height: 190px;
+    align-items: flex-end;
+  }
+
+  .bubble {
+    max-width: 92%;
+    padding: 14px 16px;
+    border-radius: 22px 22px 6px 22px;
+    background: var(--brand);
+    color: var(--on-brand);
+    font-size: 0.98rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    box-shadow: 0 14px 30px -18px var(--shadow-color);
+  }
+
+  .preview__actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .preview__actions .btn {
+    flex: 1;
+    justify-content: space-between;
+  }
+
+  /* Copy button: icon swap blurred across so it reads as one morph. */
+  .copy {
+    position: relative;
+  }
+
+  .copy__icon {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transition:
+      opacity 200ms ease,
+      filter 200ms ease,
+      transform 260ms var(--ease-out);
+  }
+
+  .copy__icon--b {
+    opacity: 0;
+    filter: blur(4px);
+    transform: scale(0.8);
+    color: var(--accent-text);
+  }
+
+  .copy.is-done .copy__icon--a {
+    opacity: 0;
+    filter: blur(4px);
+    transform: scale(0.8);
+  }
+
+  .copy.is-done .copy__icon--b {
+    opacity: 1;
+    filter: none;
+    transform: none;
+  }
+
+  .preview__note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    color: var(--ink-3);
+    min-height: 1.5em;
+  }
+
+  .preview__note.is-ok {
+    color: var(--accent-text);
+    font-weight: 600;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .stepper__btn:hover {
+      color: var(--ink);
+    }
+
+    .seg__opt:hover span {
+      color: var(--ink);
+    }
+
+  }
+
+  @media (max-width: 959px) {
+    .composer__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .composer__side {
+      position: static;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .form__row {
+      grid-template-columns: 1fr;
+    }
+
+    .seg {
+      width: 100%;
+    }
+
+    .seg__opt {
+      flex: 1;
+    }
+
+    .seg__opt span {
+      padding: 0 10px;
+      font-size: 0.9rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .seg__active,
+    .copy__icon {
+      transition-duration: 0ms;
+    }
+  }
+</style>
