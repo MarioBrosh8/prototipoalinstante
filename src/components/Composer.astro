@@ -1,7 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import Logo from "./Logo.astro";
-import { cta, site } from "../data/site";
+import { site } from "../data/site";
 
 const archivo = [
   { value: "si", label: "Sí, tengo" },
@@ -113,18 +113,30 @@ const archivo = [
           <div class="preview__thread">
             <p class="bubble" data-preview></p>
           </div>
-          <div class="preview__actions">
-            <a class="btn" href={site.dm} target="_blank" rel="noopener" data-send data-magnetic>
-              {cta.contact}
-              <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
-            </a>
-            <button type="button" class="round copy" data-copy aria-label="Solo copiar el mensaje" title="Solo copiar el mensaje">
-              <span class="copy__icon copy__icon--a"><Icon name="copy" size={20} /></span>
-              <span class="copy__icon copy__icon--b"><Icon name="check" size={20} /></span>
-            </button>
-          </div>
+          <ol class="dm" data-steps data-state="compose">
+            <li>
+              <button type="button" class="dm__step dm__step--copy" data-copy>
+                <span class="dm__num" aria-hidden="true">
+                  <span class="dm__a">1</span>
+                  <span class="dm__b"><Icon name="check" size={20} /></span>
+                </span>
+                <span class="dm__label">
+                  <span class="dm__a">Copia tu mensaje</span>
+                  <span class="dm__b" aria-hidden="true">Mensaje copiado</span>
+                </span>
+                <span class="dm__icon"><Icon name="copy" size={20} /></span>
+              </button>
+            </li>
+            <li>
+              <a class="dm__step dm__step--open" href={site.dm} target="_blank" rel="noopener" data-open>
+                <span class="dm__num" aria-hidden="true">2</span>
+                <span class="dm__label">Abre el chat y pégalo</span>
+                <span class="dm__icon"><Icon name="arrow-up-right" size={20} /></span>
+              </a>
+            </li>
+          </ol>
           <p class="preview__note" data-note role="status">
-            Instagram no deja prellenar mensajes, así que lo copiamos por ti.
+            Instagram no deja escribir el mensaje por ti: lo copias aquí y lo pegas en el chat.
           </p>
         </div>
       </div>
@@ -379,63 +391,182 @@ const archivo = [
     box-shadow: 0 14px 30px -18px var(--shadow-color);
   }
 
-  .preview__actions {
+  /* The page's selection color is the bubble's own purple; invert it here. */
+  .bubble::selection {
+    background: var(--on-brand);
+    color: var(--brand-deep);
+  }
+
+  .bubble.is-copied {
+    animation: bubble-copied 650ms var(--ease-out);
+  }
+
+  @keyframes bubble-copied {
+    from {
+      transform: scale(0.97);
+      box-shadow:
+        0 0 0 0 color-mix(in srgb, var(--brand) 50%, transparent),
+        0 14px 30px -18px var(--shadow-color);
+    }
+    to {
+      transform: none;
+      box-shadow:
+        0 0 0 14px transparent,
+        0 14px 30px -18px var(--shadow-color);
+    }
+  }
+
+  /*
+    Instagram can't prefill a DM (ig.me only takes ?ref=), so sending is two
+    visible steps; the one to press next wears the brand fill.
+  */
+  .dm {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dm__step {
+    --step-bg: transparent;
+    --step-ink: var(--ink);
+    --chip-bg: var(--brand-wash);
+    --chip-ink: var(--accent-text);
+    position: relative;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 14px;
+    width: 100%;
+    min-height: 56px;
+    padding: 6px 18px 6px 6px;
+    overflow: hidden;
+    border-radius: var(--radius-pill);
+    background: var(--step-bg);
+    color: var(--step-ink);
+    font-weight: 650;
+    font-size: 1rem;
+    line-height: 1.2;
+    text-align: left;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    box-shadow: inset 0 0 0 1px var(--line-strong);
+    transition:
+      transform 160ms var(--ease-out),
+      background-color 300ms ease,
+      color 300ms ease,
+      box-shadow 300ms ease;
   }
 
-  .preview__actions .btn {
-    flex: 1;
-    justify-content: space-between;
+  .dm__step:active {
+    transform: scale(0.97);
   }
 
-  /* Copy button: icon swap blurred across so it reads as one morph. */
-  .copy {
-    position: relative;
+  [data-state="compose"] .dm__step--copy,
+  [data-state="copied"] .dm__step--open {
+    --step-bg: var(--brand);
+    --step-ink: var(--on-brand);
+    --chip-bg: rgb(255 255 255 / 0.16);
+    --chip-ink: var(--on-brand);
+    box-shadow:
+      0 1px 0 0 rgb(255 255 255 / 0.18) inset,
+      0 10px 24px -12px var(--shadow-color);
   }
 
-  .copy__icon {
-    position: absolute;
-    inset: 0;
+  .dm__num {
     display: grid;
     place-items: center;
+    flex-shrink: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--chip-bg);
+    color: var(--chip-ink);
+    font-variant-numeric: tabular-nums;
+    transition:
+      background-color 300ms ease,
+      color 300ms ease;
+  }
+
+  .dm__label {
+    display: grid;
+    flex: 1;
+    min-width: 0;
+    text-wrap: balance;
+  }
+
+  .dm__icon {
+    display: grid;
+    place-items: center;
+    flex-shrink: 0;
+    transition: transform 260ms var(--ease-out);
+  }
+
+  .dm__step :global(svg) {
+    display: block;
+  }
+
+  /* "1" and its label blur across into a check and "Mensaje copiado". */
+  .dm__a,
+  .dm__b {
+    grid-area: 1 / 1;
     transition:
       opacity 200ms ease,
       filter 200ms ease,
       transform 260ms var(--ease-out);
   }
 
-  .copy__icon--b {
+  .dm__b,
+  [data-state="copied"] .dm__a {
     opacity: 0;
     filter: blur(4px);
-    transform: scale(0.8);
-    color: var(--accent-text);
+    transform: translateY(8px);
   }
 
-  .copy.is-done .copy__icon--a {
-    opacity: 0;
-    filter: blur(4px);
-    transform: scale(0.8);
+  [data-state="copied"] .dm__a {
+    transform: translateY(-8px);
   }
 
-  .copy.is-done .copy__icon--b {
+  [data-state="copied"] .dm__b {
     opacity: 1;
     filter: none;
     transform: none;
   }
 
+  /* One sweep of light when "open the chat" becomes the next step. */
+  .dm__step--open::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgb(255 255 255 / 0.3) 50%, transparent 65%);
+    transform: translateX(-101%);
+    pointer-events: none;
+  }
+
+  [data-state="copied"] .dm__step--open::after {
+    animation: dm-shine 1000ms var(--ease-in-out) 200ms;
+  }
+
+  @keyframes dm-shine {
+    to {
+      transform: translateX(101%);
+    }
+  }
+
   .preview__note {
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-size: 0.88rem;
     color: var(--ink-3);
     min-height: 1.5em;
   }
 
-  .preview__note.is-ok {
+  .preview__note[data-tone="ok"] {
     color: var(--accent-text);
+    font-weight: 600;
+  }
+
+  .preview__note[data-tone="warn"] {
+    color: light-dark(#b0233f, #ff8fa6);
     font-weight: 600;
   }
 
@@ -448,6 +579,18 @@ const archivo = [
       color: var(--ink);
     }
 
+    .dm__step:hover {
+      --step-bg: var(--brand-wash);
+    }
+
+    [data-state="compose"] .dm__step--copy:hover,
+    [data-state="copied"] .dm__step--open:hover {
+      --step-bg: var(--brand-hover);
+    }
+
+    .dm__step--open:hover .dm__icon {
+      transform: translate(2px, -2px);
+    }
   }
 
   @media (max-width: 959px) {
@@ -481,8 +624,14 @@ const archivo = [
 
   @media (prefers-reduced-motion: reduce) {
     .seg__active,
-    .copy__icon {
+    .dm__a,
+    .dm__b {
       transition-duration: 0ms;
+    }
+
+    .bubble.is-copied,
+    [data-state="copied"] .dm__step--open::after {
+      animation: none;
     }
   }
 </style>
