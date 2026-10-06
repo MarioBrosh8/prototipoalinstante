@@ -1,0 +1,12 @@
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "prototipoalinstante-www",
+  "main": "index.js",
+  "compatibility_date": "2026-09-22",
+
+  // Only job: send www.prototipoalinstante.com to the apex with a 301.
+  // Deploy with `npm run deploy:www`.
+  "routes": [{ "pattern": "www.prototipoalinstante.com", "custom_domain": true }],
+  "workers_dev": false,
+  "preview_urls": false
+}

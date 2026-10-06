@@ -1,7 +1,7 @@
 /*
-  PROIN design tokens.
+  Pro-In design tokens.
 
-  Palette: one accent, PROIN's violet, sampled from their Instagram covers
+  Palette: one accent, Pro-In's violet, sampled from their Instagram covers
   (#8a3bc1) and slides (#500589). Neutrals are violet-tinted so the whole page
   reads as one family in both schemes. Every text token below passes WCAG AA on
   --bg; white text on --brand is 6:1.
@@ -40,8 +40,10 @@
   --on-brand: #fdfbff;
   --accent-text: light-dark(#6f24a8, #c39af0);
   --brand-wash: light-dark(#eadff7, #231433);
-  --logo-ink: light-dark(#7d33b3, #a45ad8);
-  --logo-light: light-dark(#b98ae8, #d2b1f3);
+  /* Logo colors measured from Pro-In's files; lighter in dark mode. */
+  --logo-ink: light-dark(#7d37b2, #a45ad8);
+  --logo-light: light-dark(#a16fc8, #d2b1f3);
+  --logo-green: light-dark(#82bf5a, #94d16b);
 
   --bg: light-dark(#f6f2fb, #0d0a12);
   --bg-raised: light-dark(#fdfbff, #16111e);
@@ -64,8 +66,15 @@
   --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 
-  /* PROIN's Instagram backgrounds tile their mark: hotend and eye. */
-  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='%23fff' fill-opacity='.1'%3E%3Crect x='9' y='9' width='26' height='13' rx='3'/%3E%3Cpath d='M15 22h14v5a4 4 0 0 1-4 4h-6a4 4 0 0 1-4-4z'/%3E%3C/g%3E%3Cg fill='none' stroke='%23fff' stroke-opacity='.1' stroke-width='2.6' stroke-linecap='round'%3E%3Cpath d='M50 64c9-9 23-9 32 0c-9 9-23 9-32 0z'/%3E%3Ccircle cx='66' cy='64' r='4.5'/%3E%3C/g%3E%3C/svg%3E");
+  /* Press feedback: text buttons give a little, small icon buttons a bit more. */
+  --press: 0.97;
+  --press-icon: 0.94;
+  --dur-press: 160ms;
+
+  /* Pro-In's wallpaper tiles their mark in staggered rows. --pattern is white at
+     10% for the violet bands; --pattern-mask is solid, for a themed mask. */
+  --pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='136' viewBox='0 0 120 136'%3E%3Cdefs%3E%3Cg id='m'%3E%3Cpath fill-rule='evenodd' d='M166.9 43.7a22.8 22.8 0 0 1 22.8-22.8h120.6a22.8 22.8 0 0 1 22.8 22.8v37.9a22.8 22.8 0 0 1-22.8 22.8h-120.6a22.8 22.8 0 0 1-22.8-22.8zM188.6 47.9a4 4 0 0 1 4-4h114.8a4 4 0 0 1 4 4v33a4 4 0 0 1-4 4h-114.8a4 4 0 0 1-4-4z'/%3E%3Cpath fill-rule='evenodd' d='M200.9 100.4h98.3v26.2a35.5 35.5 0 0 1-35.5 35.5h-27.3a35.5 35.5 0 0 1-35.5-35.5zM220.9 105h58.2v25a7.9 7.9 0 0 1-7.9 7.9h-42.3a7.9 7.9 0 0 1-7.9-7.9z'/%3E%3Cpath d='M301 479c-16-1-44-3-47-4c-1 0-3-1-5-1c-6-1-14-3-15-3c0 0-1-1-3-1c-1 0-4-1-5-1c-1-1-4-1-6-2c-41-11-69-37-81-76c-1-2-2-5-2-6c0-1-3-7-5-13c-2-7-4-12-4-13c-1-1-1-4-2-6c-2-6-6-14-10-24c-1-2-3-6-3-7c-2-4-5-9-7-13c-3-8-1-15 6-17c3-1 14 0 17 2c0 0 2 0 3 1c2 0 6 1 8 2c8 1 14 2 18 3c5 1 8 2 15 3c8 2 12 3 15 3c4 0 11 2 15 3c3 0 7 1 13 2c2 0 7 2 19 5c37 11 53 24 58 46c9 42-38 71-70 44c-25-20-6-42 31-35c12 2 13-6 1-17c-7-7-22-11-29-9c-1 1-3 1-4 2c-15 4-25 24-21 39c4 15 22 31 42 35c13 4 26 6 35 7c2 0 6 1 8 1c3 0 9 1 14 1c6 0 14 1 19 1c21 1 23-1 18-18c0-1 0-2 0-3c0-1 0-3-4-14c-2-7-4-12-6-18c-1-3-7-16-9-20c-1-1-3-5-5-8c-3-3-5-6-5-7c-14-21-48-44-77-52c-2-1-5-1-7-2c-4-1-9-3-14-4c-27-7-42-24-35-39c4-9 10-13 21-19c5-2 16-7 17-7c1 0 10-4 13-6c5-3 14-16 14-20c0 0 0-2 1-3c0-1 1-4 1-5c0-2 1-4 1-6c0-1 1-8 1-16c0-14 0-14 6-14c5 0 5 0 5 9c0 5 0 9 0 9c-1 0-1 2-1 4c-2 20-5 31-13 41c-6 8-11 12-26 17c-25 9-34 17-30 27c3 9 16 17 31 19c2 0 6 1 9 1c2 1 6 1 9 1c4 0 8 1 16 3c2 0 5 1 7 2c10 2 28 11 35 16c1 1 3 2 4 3c11 8 22 20 29 31c1 2 3 5 4 7c4 6 14 27 17 35c1 2 2 4 2 5c4 9 11 30 15 45c0 1 2 6 4 10c8 16 3 24-13 21c-1-1-5-1-8-2c-2 0-6-1-8-2c-2 0-6-1-8-1c-2 0-7-1-11-2c-3 0-8-1-10-1c-2 0-5-1-7-1c-1-1-3-1-4-1c-1 0-3 0-5-1c-1 0-4-1-6-1c-3 0-8-1-14-3c-3 0-11-1-15-2c-6-1-20-4-25-7c-1 0-3-1-4-1c-9-3-23-12-30-19c-15-15-18-40-6-57c11-18 29-24 50-17c15 4 30 24 26 32c-4 6-7 7-20 6c-9-1-14-1-18 0c-8 2-15 9-13 13c0 0 0 1 0 2c1 3 9 10 13 12c11 6 27 3 36-7c14-14 13-37-1-51c-7-7-28-16-36-16c-1 0-2 0-4 0c-2-1-14-2-25-3c-3 0-7-1-9-1c-2 0-5-1-7-1c-2 0-5-1-7-1c-3 0-6-1-8-1c-3 0-6-1-7-1c-2 0-4-1-5-1c-6-1-15-3-18-4c-7-3-8 1-3 12c5 9 6 10 7 16c1 2 2 5 3 7c1 2 2 5 2 6c0 3 1 5 3 13c5 15 14 33 25 45c19 22 43 36 78 47c2 1 4 1 5 2c4 1 10 2 14 3c2 1 6 1 8 2c1 0 4 1 6 1c2 0 5 1 7 1c1 0 5 1 8 1c6 0 8 1 8 4c1 2-2 3-10 3z'/%3E%3C/g%3E%3C/defs%3E%3Cg fill='%23fff' opacity='.1'%3E%3Cuse href='%23m' transform='translate(1.10 3.75) scale(0.1253)'/%3E%3Cuse href='%23m' transform='translate(61.10 71.75) scale(0.1253)'/%3E%3C/g%3E%3C/svg%3E");
+  --pattern-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='136' viewBox='0 0 120 136'%3E%3Cdefs%3E%3Cg id='m'%3E%3Cpath fill-rule='evenodd' d='M166.9 43.7a22.8 22.8 0 0 1 22.8-22.8h120.6a22.8 22.8 0 0 1 22.8 22.8v37.9a22.8 22.8 0 0 1-22.8 22.8h-120.6a22.8 22.8 0 0 1-22.8-22.8zM188.6 47.9a4 4 0 0 1 4-4h114.8a4 4 0 0 1 4 4v33a4 4 0 0 1-4 4h-114.8a4 4 0 0 1-4-4z'/%3E%3Cpath fill-rule='evenodd' d='M200.9 100.4h98.3v26.2a35.5 35.5 0 0 1-35.5 35.5h-27.3a35.5 35.5 0 0 1-35.5-35.5zM220.9 105h58.2v25a7.9 7.9 0 0 1-7.9 7.9h-42.3a7.9 7.9 0 0 1-7.9-7.9z'/%3E%3Cpath d='M301 479c-16-1-44-3-47-4c-1 0-3-1-5-1c-6-1-14-3-15-3c0 0-1-1-3-1c-1 0-4-1-5-1c-1-1-4-1-6-2c-41-11-69-37-81-76c-1-2-2-5-2-6c0-1-3-7-5-13c-2-7-4-12-4-13c-1-1-1-4-2-6c-2-6-6-14-10-24c-1-2-3-6-3-7c-2-4-5-9-7-13c-3-8-1-15 6-17c3-1 14 0 17 2c0 0 2 0 3 1c2 0 6 1 8 2c8 1 14 2 18 3c5 1 8 2 15 3c8 2 12 3 15 3c4 0 11 2 15 3c3 0 7 1 13 2c2 0 7 2 19 5c37 11 53 24 58 46c9 42-38 71-70 44c-25-20-6-42 31-35c12 2 13-6 1-17c-7-7-22-11-29-9c-1 1-3 1-4 2c-15 4-25 24-21 39c4 15 22 31 42 35c13 4 26 6 35 7c2 0 6 1 8 1c3 0 9 1 14 1c6 0 14 1 19 1c21 1 23-1 18-18c0-1 0-2 0-3c0-1 0-3-4-14c-2-7-4-12-6-18c-1-3-7-16-9-20c-1-1-3-5-5-8c-3-3-5-6-5-7c-14-21-48-44-77-52c-2-1-5-1-7-2c-4-1-9-3-14-4c-27-7-42-24-35-39c4-9 10-13 21-19c5-2 16-7 17-7c1 0 10-4 13-6c5-3 14-16 14-20c0 0 0-2 1-3c0-1 1-4 1-5c0-2 1-4 1-6c0-1 1-8 1-16c0-14 0-14 6-14c5 0 5 0 5 9c0 5 0 9 0 9c-1 0-1 2-1 4c-2 20-5 31-13 41c-6 8-11 12-26 17c-25 9-34 17-30 27c3 9 16 17 31 19c2 0 6 1 9 1c2 1 6 1 9 1c4 0 8 1 16 3c2 0 5 1 7 2c10 2 28 11 35 16c1 1 3 2 4 3c11 8 22 20 29 31c1 2 3 5 4 7c4 6 14 27 17 35c1 2 2 4 2 5c4 9 11 30 15 45c0 1 2 6 4 10c8 16 3 24-13 21c-1-1-5-1-8-2c-2 0-6-1-8-2c-2 0-6-1-8-1c-2 0-7-1-11-2c-3 0-8-1-10-1c-2 0-5-1-7-1c-1-1-3-1-4-1c-1 0-3 0-5-1c-1 0-4-1-6-1c-3 0-8-1-14-3c-3 0-11-1-15-2c-6-1-20-4-25-7c-1 0-3-1-4-1c-9-3-23-12-30-19c-15-15-18-40-6-57c11-18 29-24 50-17c15 4 30 24 26 32c-4 6-7 7-20 6c-9-1-14-1-18 0c-8 2-15 9-13 13c0 0 0 1 0 2c1 3 9 10 13 12c11 6 27 3 36-7c14-14 13-37-1-51c-7-7-28-16-36-16c-1 0-2 0-4 0c-2-1-14-2-25-3c-3 0-7-1-9-1c-2 0-5-1-7-1c-2 0-5-1-7-1c-3 0-6-1-8-1c-3 0-6-1-7-1c-2 0-4-1-5-1c-6-1-15-3-18-4c-7-3-8 1-3 12c5 9 6 10 7 16c1 2 2 5 3 7c1 2 2 5 2 6c0 3 1 5 3 13c5 15 14 33 25 45c19 22 43 36 78 47c2 1 4 1 5 2c4 1 10 2 14 3c2 1 6 1 8 2c1 0 4 1 6 1c2 0 5 1 7 1c1 0 5 1 8 1c6 0 8 1 8 4c1 2-2 3-10 3z'/%3E%3C/g%3E%3C/defs%3E%3Cg fill='%23000'%3E%3Cuse href='%23m' transform='translate(1.10 3.75) scale(0.1253)'/%3E%3Cuse href='%23m' transform='translate(61.10 71.75) scale(0.1253)'/%3E%3C/g%3E%3C/svg%3E");
 
   --gutter: clamp(16px, 4vw, 40px);
   --maxw: 1240px;
@@ -268,6 +277,7 @@ button,
   display: inline-flex;
   align-items: center;
   gap: 10px;
+  text-wrap: balance;
   font-size: 0.8125rem;
   font-weight: 600;
   letter-spacing: 0.08em;
@@ -297,12 +307,12 @@ button,
     0 1px 0 0 rgb(255 255 255 / 0.18) inset,
     0 10px 24px -12px var(--shadow-color);
   transition:
-    transform 160ms var(--ease-out),
+    transform var(--dur-press) var(--ease-out),
     background-color 200ms ease;
 }
 
 .btn:active {
-  transform: scale(0.97);
+  transform: scale(var(--press));
 }
 
 .btn__icon {
@@ -328,15 +338,6 @@ button,
   background: none;
 }
 
-.btn--light {
-  --btn-bg: #fdfbff;
-  --btn-ink: #3b0a66;
-}
-
-.btn--light .btn__icon {
-  background: rgb(80 5 137 / 0.1);
-}
-
 @media (hover: hover) and (pointer: fine) {
   .btn:hover {
     --btn-bg: var(--brand-hover);
@@ -348,10 +349,6 @@ button,
 
   .btn--ghost:hover {
     --btn-bg: var(--brand-wash);
-  }
-
-  .btn--light:hover {
-    --btn-bg: #ffffff;
   }
 }
 
@@ -366,13 +363,13 @@ button,
   color: var(--ink);
   box-shadow: inset 0 0 0 1px var(--line-strong);
   transition:
-    transform 160ms var(--ease-out),
+    transform var(--dur-press) var(--ease-out),
     background-color 200ms ease,
     opacity 200ms ease;
 }
 
 .round:active:not(:disabled) {
-  transform: scale(0.94);
+  transform: scale(var(--press-icon));
 }
 
 .round:disabled {

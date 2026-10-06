@@ -1,9 +1,20 @@
 ---
 import { marquesina } from "../data/site";
+import { eyeLite, hotend, markBox } from "../data/logo";
 ---
 
 <section class="marquee" aria-label="Lo que imprimimos">
   <p class="sr-only">{marquesina.join(", ")}.</p>
+  {/* Pro-In's mark, defined once and reused between the words. */}
+  <svg class="marquee__defs" aria-hidden="true" focusable="false">
+    <symbol id="marquee-mark" viewBox={`${markBox.x} ${markBox.y} ${markBox.w} ${markBox.h}`}>
+      <path d={eyeLite} fill="var(--logo-ink)"></path>
+      <path d={hotend.block} fill="var(--logo-ink)"></path>
+      <path d={hotend.nozzle} fill="var(--logo-ink)"></path>
+      <path d={hotend.panel} fill="var(--logo-light)"></path>
+      <path d={hotend.window} fill="var(--logo-light)"></path>
+    </symbol>
+  </svg>
   <div class="marquee__track" aria-hidden="true">
     {
       [0, 1].map(() => (
@@ -11,10 +22,8 @@ import { marquesina } from "../data/site";
           {marquesina.map((word, i) => (
             <li class:list={["marquee__item", { "is-outline": i % 2 === 1 }]}>
               <span>{word}</span>
-              <svg class="marquee__glyph" viewBox="0 0 330 420" width="22" height="28">
-                <rect x="4" y="4" width="322" height="160" rx="26" />
-                <path d="M69 164 H260 V224 Q260 274 210 274 H119 Q69 274 69 224 Z" />
-                <path d="M165 274 V330 Q165 380 140 410" fill="none" stroke-width="30" stroke-linecap="round" />
+              <svg class="marquee__glyph">
+                <use href="#marquee-mark" />
               </svg>
             </li>
           ))}
@@ -63,10 +72,17 @@ import { marquesina } from "../data/site";
     -webkit-text-stroke: 1.5px var(--ink-3);
   }
 
+  .marquee__defs {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+  }
+
   .marquee__glyph {
     flex-shrink: 0;
-    fill: var(--brand);
-    stroke: var(--brand);
+    height: 0.74em;
+    width: calc(0.74em * 272 / 463);
   }
 
   @media (prefers-reduced-motion: no-preference) {

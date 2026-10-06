@@ -1,7 +1,7 @@
 name: Deploy
 
 # Every push and PR is type-checked and built. Pushes to main are also
-# deployed to https://prototipoalinstante.mariovaldez.dev, but only once the
+# deployed to https://prototipoalinstante.com, but only once the
 # repository has the CLOUDFLARE_API_TOKEN secret and the CLOUDFLARE_ACCOUNT_ID
 # variable (see README). Without them the run builds and leaves a notice.
 

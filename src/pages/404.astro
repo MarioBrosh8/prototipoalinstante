@@ -5,7 +5,7 @@ import Logo from "../components/Logo.astro";
 import { cta, site } from "../data/site";
 ---
 
-<Base title="Página no encontrada | PROIN" noindex>
+<Base title="Página no encontrada | Pro-In" noindex>
   <main id="contenido" class="lost">
     <span class="lost__mark"><Logo animate /></span>
     <h1 class="h2">Esta página no salió de la impresora.</h1>
@@ -15,8 +15,8 @@ import { cta, site } from "../data/site";
         Ir al inicio
         <span class="btn__icon"><Icon name="arrow-right" size={18} /></span>
       </a>
-      <a class="btn btn--ghost" href={site.dm} target="_blank" rel="noopener">
-        <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+      <a class="btn btn--ghost" href={`/${site.quote}`}>
+        <span class="btn__icon"><Icon name="note-pencil" size={18} /></span>
         {cta.contact}
       </a>
     </div>

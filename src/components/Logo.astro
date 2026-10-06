@@ -1,118 +1,171 @@
 ---
-// PROIN's mark: a hotend whose filament becomes an eye with a spiral.
-// Redrawn as SVG from their Instagram avatar and reel end cards (no vector
-// original was available). With `animate`, the filament draws itself once.
+// Pro-In's logos, from the vectors in src/data/logo.ts (traced from the files
+// they sent). variant="full" is "Pro" + the mark + "-In"; "mark" is the hotend
+// and eye alone.
+//
+// With `animate`, the hotend drops in and the filament draws the whole eye as
+// one continuous line, the way the printer would extrude it; the letters print
+// in layers. The eye is revealed through a mask of centerline pieces, each with
+// its own width (wide at the corners, narrow in the spiral) and its share of
+// the time. A full-size rect seals the mask at the end so nothing stays
+// uncovered. Below the fold, initReveals() adds .pre and the animation waits
+// for .is-in.
+import { drawPieces, eye, fullBox, hotend, letters, markBox, place } from "../data/logo";
+
 interface Props {
-  class?: string;
+  variant?: "mark" | "full";
   animate?: boolean;
+  /** Accessible name; leave empty when the logo sits next to visible text. */
   title?: string;
+  class?: string;
 }
 
-const { class: className, animate = false, title } = Astro.props;
+const { variant = "mark", animate = false, title, class: className } = Astro.props;
+const full = variant === "full";
+const box = full ? fullBox : markBox;
+const id = `lg${Math.random().toString(36).slice(2, 8)}`;
+
+// Timeline in ms.
+const penAt = full ? 320 : 260;
+const pen = full ? 1700 : 1500;
+const pieces = drawPieces.map((p) => ({
+  ...p,
+  at: Math.round(penAt + p.from * pen),
+  dur: Math.round((p.to - p.from) * pen),
+}));
+const sealAt = penAt + pen;
+const maskBox = { x: 90, y: 140, w: 300, h: 350 };
 ---
 
 <svg
-  class:list={["logo", className, { "logo--draw": animate }]}
-  viewBox="0 0 540 910"
+  class:list={["logo", full ? "logo--full" : "logo--mark", { "logo--anim": animate }, className]}
+  viewBox={`${box.x} ${box.y} ${box.w} ${box.h}`}
   role={title ? "img" : undefined}
   aria-label={title}
   aria-hidden={title ? undefined : "true"}
   focusable="false"
+  data-draw={animate ? "" : undefined}
 >
-  <g class="logo__head">
-    <rect x="132" y="7" width="323" height="163" rx="26" fill="var(--logo-ink)"></rect>
-    <path d="M197 170 H388 V230 Q388 280 338 280 H247 Q197 280 197 230 Z" fill="var(--logo-ink)"></path>
-    <rect x="166" y="31" width="255" height="74" rx="8" fill="var(--logo-light)"></rect>
-    <rect x="227" y="188" width="131" height="44" rx="6" fill="var(--logo-light)"></rect>
-  </g>
-  <g class="logo__lines" fill="none" stroke="var(--logo-ink)" stroke-linecap="round" stroke-linejoin="round">
-    <path
-      class="logo__filament"
-      pathLength="1"
-      stroke-width="30"
-      d="M285 280 C285 350 280 390 225 410 C170 430 148 455 152 478 C156 505 205 520 290 534 C385 550 440 600 470 680 C492 740 512 800 525 855"
-    ></path>
-    <path
-      class="logo__eye"
-      pathLength="1"
-      stroke-width="30"
-      d="M10 550 C100 563 220 578 290 598 C332 610 370 640 372 690 C374 742 336 784 278 787 C218 790 170 752 170 704 C170 656 212 620 262 616 C298 613 330 638 327 670"
-    ></path>
-    <path
-      class="logo__eye logo__eye--2"
-      pathLength="1"
-      stroke-width="17"
-      d="M327 670 C318 688 282 677 252 683 C228 689 214 710 221 731 C229 752 262 761 292 755"
-    ></path>
-    <path
-      class="logo__eye logo__eye--3"
-      pathLength="1"
-      stroke-width="30"
-      d="M525 855 C450 838 330 828 250 812 C170 796 120 740 100 685 C85 645 72 615 65 592"
-    ></path>
-    <path
-      class="logo__eye logo__eye--4"
-      pathLength="1"
-      stroke-width="32"
-      d="M10 550 C40 640 80 735 140 800 C200 862 300 890 410 898"
-    ></path>
+  {
+    full && (
+      <g class="logo__words">
+        <path class="logo__word" style="--at:180ms" fill="var(--logo-ink)" d={letters.pro} />
+        <path class="logo__word" style="--at:640ms" fill="var(--logo-green)" d={letters.in} />
+      </g>
+    )
+  }
+  <g transform={full ? `matrix(${place.s} 0 0 ${place.s} ${place.x} ${place.y})` : undefined}>
+    {
+      animate && (
+        <mask id={id} maskUnits="userSpaceOnUse" x={maskBox.x} y={maskBox.y} width={maskBox.w} height={maskBox.h}>
+          <g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round">
+            {pieces.map((p) => (
+              <path class="logo__piece" d={p.d} stroke-width={p.w} pathLength="1" style={`--at:${p.at}ms;--dur:${p.dur}ms`} />
+            ))}
+          </g>
+          <rect
+            class="logo__seal"
+            x={maskBox.x}
+            y={maskBox.y}
+            width={maskBox.w}
+            height={maskBox.h}
+            fill="#fff"
+            style={`--at:${sealAt}ms`}
+          />
+        </mask>
+      )
+    }
+    <path class="logo__eye" fill="var(--logo-ink)" d={eye} mask={animate ? `url(#${id})` : undefined} />
+    <g class="logo__head">
+      <path fill="var(--logo-ink)" d={hotend.block} />
+      <path fill="var(--logo-ink)" d={hotend.nozzle} />
+      <path fill="var(--logo-light)" d={hotend.panel} />
+      <path fill="var(--logo-light)" d={hotend.window} />
+    </g>
   </g>
 </svg>
 
 <style>
   .logo {
+    display: block;
     width: auto;
     height: 100%;
     overflow: visible;
   }
 
   @media (prefers-reduced-motion: no-preference) {
-    .logo--draw .logo__head {
-      animation: logo-head 420ms var(--ease-out) both;
-      transform-origin: 50% 0%;
+    .logo--anim .logo__head {
       transform-box: fill-box;
+      transform-origin: 50% 100%;
+      animation: logo-head 460ms var(--ease-out) both;
     }
 
-    .logo--draw .logo__filament,
-    .logo--draw .logo__eye {
-      stroke-dasharray: 1;
-      stroke-dashoffset: 1;
-      animation: logo-draw 700ms var(--ease-out) forwards;
+    /* Dash 1, gap 2: at offset 1.01 nothing touches the start, so round caps
+       can't leave a dot there before the pen arrives. */
+    .logo--anim .logo__piece {
+      stroke-dasharray: 1 2;
+      animation: logo-draw var(--dur) linear var(--at) both;
     }
 
-    .logo--draw .logo__filament {
-      animation-delay: 260ms;
-      animation-timing-function: var(--ease-in-out);
+    .logo--anim .logo__seal {
+      animation: logo-hold var(--at) linear backwards;
     }
 
-    .logo--draw .logo__eye {
-      animation-delay: 820ms;
+    .logo--anim .logo__word {
+      animation: logo-print 660ms steps(10, end) var(--at) both;
     }
 
-    .logo--draw .logo__eye--2 {
-      animation-delay: 1180ms;
-      animation-duration: 420ms;
+    /* Below the fold: hold the empty first frame until it scrolls in. */
+    .logo--anim:global(.pre):not(:global(.is-in)) .logo__head {
+      animation: none;
+      opacity: 0;
     }
 
-    .logo--draw .logo__eye--3 {
-      animation-delay: 900ms;
+    .logo--anim:global(.pre):not(:global(.is-in)) .logo__piece {
+      animation: none;
+      stroke-dashoffset: 1.01;
     }
 
-    .logo--draw .logo__eye--4 {
-      animation-delay: 860ms;
+    .logo--anim:global(.pre):not(:global(.is-in)) .logo__seal {
+      animation: none;
+      opacity: 0;
+    }
+
+    .logo--anim:global(.pre):not(:global(.is-in)) .logo__word {
+      animation: none;
+      clip-path: inset(100% 0 0 0);
     }
   }
 
   @keyframes logo-head {
     from {
       opacity: 0;
-      transform: translateY(-18%) scale(0.96);
+      transform: translateY(-34%);
     }
   }
 
   @keyframes logo-draw {
+    from {
+      stroke-dashoffset: 1.01;
+    }
     to {
       stroke-dashoffset: 0;
+    }
+  }
+
+  @keyframes logo-hold {
+    from,
+    to {
+      opacity: 0;
+    }
+  }
+
+  @keyframes logo-print {
+    from {
+      clip-path: inset(100% 0 0 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
     }
   }
 </style>

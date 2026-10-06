@@ -1,4 +1,5 @@
 ---
+import DakuLogo from "./DakuLogo.astro";
 import Icon from "./Icon.astro";
 import Logo from "./Logo.astro";
 import { cta, site } from "../data/site";
@@ -7,70 +8,103 @@ const year = new Date().getFullYear();
 ---
 
 <footer class="footer">
-  <div class="wrap footer__top">
-    <div class="footer__brand">
-      <span class="footer__mark"><Logo /></span>
-      <span>
-        <span class="footer__name">{site.name}</span>
-        <span class="footer__long">{site.longName}</span>
-      </span>
+  {/* Like Pro-In's own wallpaper: their mark tiled behind the full logo. */}
+  <div class="footer__wall">
+    <div class="wrap footer__brand">
+      <Logo variant="full" animate class="footer__logo" title="Pro-In" />
+      <p class="footer__long">{site.longName}</p>
     </div>
+  </div>
+
+  <div class="wrap footer__top">
     <p class="footer__about">
-      Diseño e impresión 3D. {site.location}, con envíos a {site.areaServed}.
+      Diseño e impresión 3D. {site.location}, con envío a todo México.
     </p>
     <nav class="footer__links" aria-label="Contacto">
-      <a href={site.dm} target="_blank" rel="noopener">
+      <a href={site.quote}>
         {cta.contact}
-        <Icon name="arrow-up-right" size={16} />
+        <Icon name="note-pencil" size={16} />
       </a>
       <a href={site.instagram} target="_blank" rel="noopener">
-        Instagram
+        {cta.instagram}
         <Icon name="arrow-up-right" size={16} />
+      </a>
+      <a href={`mailto:${site.email}`}>
+        <Icon name="envelope-simple" size={16} />
+        {site.email}
       </a>
     </nav>
   </div>
+
   <div class="wrap footer__base">
     <p>© {year} {site.name}, {site.longName}.</p>
-    <p>Sitio por <a href="https://mariovaldez.dev" target="_blank" rel="noopener">Mario Valdez</a></p>
+    <a class="footer__daku" href="https://daku.com.mx" target="_blank" rel="noopener">
+      Desarrollado por
+      <span class="footer__daku-logo"><DakuLogo /></span>
+    </a>
   </div>
 </footer>
 
 <style>
   .footer {
-    padding-block: clamp(56px, 8vw, 96px) max(28px, env(safe-area-inset-bottom));
+    padding-bottom: max(28px, env(safe-area-inset-bottom));
     border-top: 1px solid var(--line);
+  }
+
+  .footer__wall {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding-block: clamp(56px, 9vw, 112px);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .footer__wall::before,
+  .footer__wall::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .footer__wall::before {
+    background: var(--logo-ink);
+    opacity: 0.09;
+    -webkit-mask: var(--pattern-mask) 0 0 / 120px 136px;
+    mask: var(--pattern-mask) 0 0 / 120px 136px;
+  }
+
+  /* Clear the pattern behind the logo so it reads first. */
+  .footer__wall::after {
+    background: radial-gradient(closest-side, var(--bg) 55%, transparent);
+    inset: 0 max(0px, calc(50% - 420px));
+  }
+
+  .footer__brand {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+  }
+
+  .footer__brand :global(.footer__logo) {
+    height: clamp(132px, 21vw, 248px);
+  }
+
+  .footer__long {
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
   }
 
   .footer__top {
     display: grid;
-    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
     gap: clamp(20px, 4vw, 56px);
-  }
-
-  .footer__brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-  }
-
-  .footer__mark {
-    display: block;
-    height: 52px;
-  }
-
-  .footer__name {
-    display: block;
-    font-weight: 800;
-    font-size: 1.35rem;
-    letter-spacing: -0.02em;
-    line-height: 1.1;
-  }
-
-  .footer__long {
-    display: block;
-    font-size: 0.9rem;
-    color: var(--ink-3);
+    padding-top: clamp(36px, 5vw, 56px);
   }
 
   .footer__about {
@@ -80,6 +114,7 @@ const year = new Date().getFullYear();
 
   .footer__links {
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
   }
 
@@ -94,28 +129,36 @@ const year = new Date().getFullYear();
     box-shadow: inset 0 0 0 1px var(--line-strong);
     transition:
       background-color 200ms ease,
-      transform 160ms var(--ease-out);
+      transform var(--dur-press) var(--ease-out);
   }
 
   .footer__links a:active {
-    transform: scale(0.97);
+    transform: scale(var(--press));
   }
 
   .footer__base {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     justify-content: space-between;
-    gap: 8px 24px;
+    gap: 12px 24px;
     margin-top: clamp(36px, 5vw, 56px);
     font-size: 0.88rem;
     color: var(--ink-3);
   }
 
-  .footer__base a {
+  .footer__daku {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
     color: var(--ink-2);
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--line-strong);
+    transition: color 200ms ease;
+  }
+
+  .footer__daku-logo {
+    display: block;
+    height: 17px;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -123,7 +166,7 @@ const year = new Date().getFullYear();
       background: var(--brand-wash);
     }
 
-    .footer__base a:hover {
+    .footer__daku:hover {
       color: var(--ink);
     }
   }

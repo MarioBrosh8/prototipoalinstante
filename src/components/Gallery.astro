@@ -1,13 +1,13 @@
 ---
 import Photo from "./Photo.astro";
 import Icon from "./Icon.astro";
-import { site, trabajos } from "../data/site";
+import { cta, site, trabajos } from "../data/site";
 ---
 
 <section class="section gallery" id="trabajos" aria-labelledby="gallery-title">
   <div class="wrap gallery__head">
     <div class="gallery__intro">
-      <p class="eyebrow" data-reveal>Hecho en PROIN</p>
+      <p class="eyebrow" data-reveal>Hecho en Pro-In</p>
       <h2 id="gallery-title" class="h2" data-reveal style="--i:1">Recién salido de la impresora.</h2>
     </div>
     <div class="gallery__nav" data-reveal style="--i:2">
@@ -48,7 +48,7 @@ import { site, trabajos } from "../data/site";
             <span class="card__endhandle">{site.handle}</span>
           </span>
           <span class="card__cap">
-            <span class="card__title">Ver todo</span>
+            <span class="card__title">{cta.instagram}</span>
             <span class="card__type">
               Reels, historias y pedidos
               <Icon name="arrow-up-right" size={15} class="card__arrow" />
@@ -166,7 +166,7 @@ import { site, trabajos } from "../data/site";
     transition: transform 260ms var(--ease-out);
   }
 
-  /* Closing card: PROIN's own look, violet with their logo pattern. */
+  /* Closing card: Pro-In's own look, violet with their logo pattern. */
   .card__media--brand {
     display: grid;
     place-content: center;
@@ -176,7 +176,7 @@ import { site, trabajos } from "../data/site";
     text-align: center;
     color: #fdfbff;
     background:
-      var(--pattern) 0 0 / 88px 88px,
+      var(--pattern) 0 0 / 120px 136px,
       linear-gradient(160deg, #500589, #8a3bc1 70%, #a558ce);
   }
 

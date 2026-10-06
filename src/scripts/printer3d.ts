@@ -1,5 +1,5 @@
 /*
-  The hero's live print: PROIN's lattice sphere lamp, generated in code (no
+  The hero's live print: Pro-In's lattice sphere lamp, generated in code (no
   model download), printed layer by layer by a hotend shaped like their logo.
 
   - Layers build up with a hot edge; the walls carry faint layer lines.
@@ -483,7 +483,7 @@ export function mount(root: HTMLElement): PrinterController {
   );
   model.add(lattice);
 
-  // Octagonal base with vents, printed first in copper like PROIN's lamp.
+  // Octagonal base with vents, printed first in copper like Pro-In's lamp.
   const baseGeo = new CylinderGeometry(0.585, 0.64, BASE_H, 8, 1, true).toNonIndexed();
   baseGeo.computeVertexNormals();
   baseGeo.translate(0, BASE_H / 2, 0);
@@ -526,7 +526,7 @@ export function mount(root: HTMLElement): PrinterController {
   fixture.visible = false;
   model.add(fixture);
 
-  // Hotend modelled on the PROIN logo: block, heater block, nozzle.
+  // Hotend modelled on the Pro-In logo: block, heater block, nozzle.
   const hotend = new Group();
   const brand = (color: string, emit = 0) =>
     new ShaderMaterial({
@@ -578,6 +578,31 @@ export function mount(root: HTMLElement): PrinterController {
   const swatches = Array.from(ui.querySelectorAll<HTMLButtonElement>("[data-filament]"));
   const stage = $<HTMLElement>("[data-stage]") ?? root;
 
+  // Labels that change in place crossfade through a 2px blur instead of
+  // jumping. The newest text always wins if calls overlap.
+  const swapText = (el: Element | null | undefined, text: string) => {
+    if (!(el instanceof HTMLElement) || (el.dataset.text ?? el.textContent) === text) return;
+    el.dataset.text = text;
+    if (reduce.matches || !el.textContent) {
+      el.textContent = text;
+      return;
+    }
+    el.getAnimations().forEach((a) => a.cancel());
+    const out = el.animate([{ opacity: 1, filter: "blur(0)" }, { opacity: 0, filter: "blur(2px)" }], {
+      duration: 90,
+      easing: "linear",
+      fill: "forwards",
+    });
+    out.onfinish = () => {
+      el.textContent = el.dataset.text ?? text;
+      out.cancel();
+      el.animate([{ opacity: 0, filter: "blur(2px)" }, { opacity: 1, filter: "blur(0)" }], {
+        duration: 160,
+        easing: "cubic-bezier(0.23, 1, 0.32, 1)",
+      });
+    };
+  };
+
   let current: Filament = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT) ?? FILAMENTS[0];
 
   const applyMaterial = (i: number, f: Filament) => {
@@ -619,7 +644,7 @@ export function mount(root: HTMLElement): PrinterController {
       s.setAttribute("aria-checked", String(on));
       s.tabIndex = on ? 0 : -1;
     });
-    if (filamentEl) filamentEl.textContent = f.name;
+    swapText(filamentEl, f.name);
     wake();
   };
 
@@ -644,7 +669,7 @@ export function mount(root: HTMLElement): PrinterController {
     if (!lightBtn) return;
     lightBtn.setAttribute("aria-pressed", String(on));
     const label = lightBtn.querySelector("[data-light-label]");
-    if (label) label.textContent = on ? "Apagar" : "Encender";
+    swapText(label, on ? "Apagar" : "Encender");
   };
   lightBtn?.addEventListener("click", () => {
     const on = lightBtn.getAttribute("aria-pressed") !== "true";
@@ -664,7 +689,7 @@ export function mount(root: HTMLElement): PrinterController {
   const setStatus = (text: string) => {
     if (text === statusText || !statusEl) return;
     statusText = text;
-    statusEl.textContent = text;
+    swapText(statusEl, text);
   };
   let shownLayer = -1;
   const setProgress = (printY: number) => {

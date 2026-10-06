@@ -1,9 +1,10 @@
 // Everything a non-developer might need to edit lives here: links, copy that
-// comes from PROIN's Instagram, and which photo goes where.
+// comes from Pro-In's Instagram, and which photo goes where.
 //
 // Copy is es-MX and uses no em or en dashes. Facts (prices, payments,
-// deliveries) are taken verbatim from PROIN's "Cotizaciones" post on
-// Instagram; if they change there, change them here.
+// deliveries) come from Pro-In's "Cotizaciones" post on Instagram plus the
+// changes they sent on 2026-10-05 (design terms, shipping to all of Mexico).
+// If they change, change them here.
 
 import lamparaYael from "../assets/trabajos/lampara-yael.jpg";
 import lamparaEsfera from "../assets/trabajos/lampara-esfera.jpg";
@@ -19,22 +20,26 @@ import llaveroLogo from "../assets/trabajos/llavero-logo.jpg";
 import empaque from "../assets/trabajos/empaque.jpg";
 
 export const site = {
-  name: "PROIN",
+  name: "Pro-In",
   longName: "Prototipo al Instante",
-  url: "https://prototipoalinstante.mariovaldez.dev",
+  url: "https://prototipoalinstante.com",
   handle: "@prototipoalinstante",
+  email: "contacto@prototipoalinstante.com",
   instagram: "https://www.instagram.com/prototipoalinstante/",
   // ig.me opens a DM thread in the Instagram app (or instagram.com on desktop).
   dm: "https://ig.me/m/prototipoalinstante",
+  // Every quote button scrolls to the questionnaire (Composer.astro), not to the DM.
+  quote: "#cotiza",
   location: "Por metro Neza",
-  areaServed: "CDMX y área metropolitana",
+  shipping: "Envío a todo México",
   description:
-    "Diseño e impresión 3D por metro Neza: lámparas personalizadas, trofeos, llaveros para tu negocio, maquetas y piezas a medida. Cotizaciones por DM.",
+    "Diseño e impresión 3D por metro Neza, con envío a todo México: lámparas personalizadas, trofeos, llaveros para tu negocio, maquetas y piezas a medida.",
 };
 
-/** One label per intent, used everywhere on the page. */
+/** One label per intent, used everywhere on the page. Quote buttons open the
+ * questionnaire (not the DM), so the label names the idea, not the channel. */
 export const cta = {
-  contact: "Cotiza por DM",
+  contact: "Cotiza tu idea",
   instagram: "Ver Instagram",
 };
 
@@ -86,13 +91,13 @@ export const categorias: Categoria[] = [
     titulo: "Piezas funcionales a medida",
     texto: "Soportes, adaptadores y refacciones con las medidas exactas que necesitas.",
     foto: soporteRaspberry,
-    alt: "Soportes naranja y blanco para cámaras Raspberry Pi, frente al logo de PROIN en un monitor",
+    alt: "Soportes naranja y blanco para cámaras Raspberry Pi, frente al logo de Pro-In en un monitor",
   },
   {
     id: "diseno",
     pieza: "Tapa para un módulo de cámara, en diseño",
     titulo: "Diseño 3D desde cero",
-    texto: "¿No tienes archivo? Lo modelamos contigo. Desde $150 MXN, con dos revisiones incluidas.",
+    texto: "¿No tienes archivo? Lo modelamos contigo, con 2 revisiones sin costo.",
     foto: disenoCad,
     alt: "Modelo 3D naranja de la tapa de un módulo de cámara, visto en el programa de diseño",
   },
@@ -114,13 +119,13 @@ export type Paso = { verbo: string; texto: string; dato: string; icono: "chat-ci
 export const pasos: Paso[] = [
   {
     verbo: "Cuéntanos",
-    dato: "Por mensaje directo",
-    texto: "Mándanos DM con lo que tienes en mente, medidas aproximadas y si ya tienes archivo STL.",
+    dato: "Con el cuestionario",
+    texto: "Llena el cuestionario con lo que tienes en mente, medidas aproximadas y si ya tienes archivo STL. Te armamos el mensaje.",
     icono: "chat-circle-dots",
   },
   {
     verbo: "Diseñamos",
-    dato: "Diseño desde $150 MXN",
+    dato: "2 revisiones sin costo",
     texto: "Si no hay archivo, lo modelamos. Si ya lo tienes, lo revisamos y hacemos ajustes pequeños sin costo.",
     icono: "cube",
   },
@@ -132,8 +137,8 @@ export const pasos: Paso[] = [
   },
   {
     verbo: "Entregamos",
-    dato: "Metro CDMX sin costo",
-    texto: "Sin costo en estaciones del metro de CDMX, previo acuerdo, o a domicilio en el área metropolitana.",
+    dato: "Envío a todo México",
+    texto: "Te lo enviamos a cualquier parte de México, o te lo entregamos sin costo en una estación del metro de CDMX, previo acuerdo.",
     icono: "package",
   },
 ];
@@ -181,7 +186,7 @@ export const trabajos: Trabajo[] = [
     titulo: "Nuestro logo, en llavero",
     tipo: "Llaveros",
     foto: llaveroLogo,
-    alt: "Llavero naranja y blanco con la boquilla y el ojo del logo de PROIN",
+    alt: "Llavero naranja y blanco con la boquilla y el ojo del logo de Pro-In",
     post: ig("reel/DVWJq_AjTKB"),
   },
   {
@@ -228,11 +233,9 @@ export const temas: Tema[] = [
     id: "diseno",
     tab: "Diseño 3D",
     titulo: "Diseño desde cero",
-    destacado: { valor: "$150", nota: "MXN desde, aparte de la impresión" },
     puntos: [
-      "El diseño se paga por adelantado para comenzar.",
-      "Incluye hasta 2 revisiones sin costo. Las adicionales tienen costo extra.",
-      "Si el producto final supera los $500 MXN, el diseño desde cero queda a cuenta.",
+      "El diseño se paga como parte del anticipo para comenzar.",
+      "Incluye 2 revisiones sin costo. Modificaciones extra se agregan al costo final del diseño.",
     ],
     foto: disenoCad,
     alt: "Modelo 3D de una pieza naranja en el programa de diseño",
@@ -267,11 +270,10 @@ export const temas: Tema[] = [
     tab: "Entregas",
     titulo: "Entregas y envíos",
     puntos: [
+      "Envío a todo México.",
       "Entregas sin costo en cualquier estación del metro de CDMX, previo acuerdo.",
-      "Envíos a domicilio en el área metropolitana.",
-      "Por el momento no hacemos envíos a otros estados.",
     ],
     foto: empaque,
-    alt: "Bolsa morada de PROIN con un pedido listo para entregar",
+    alt: "Bolsa morada de Pro-In con un pedido listo para entregar",
   },
 ];

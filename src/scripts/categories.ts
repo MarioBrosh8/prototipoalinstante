@@ -1,4 +1,6 @@
 // Behaviour for Categories.astro (bundled through main.ts, never inlined: the CSP only allows same-origin scripts).
+import { reduceMotion } from "./motion";
+
 const root = document.querySelector<HTMLElement>("[data-cats]");
 if (root) {
   const buttons = Array.from(root.querySelectorAll<HTMLButtonElement>("[data-cat]"));
@@ -11,11 +13,41 @@ if (root) {
   let active = buttons[0]?.dataset.cat ?? "";
   let timer = 0;
 
+  // FLIP: measure where each item is on screen, apply the change (the layout
+  // jumps instantly), then slide every item from its old spot to its new one
+  // on transform only. Measuring the on-screen spot lets a new hover pick up
+  // mid-slide.
+  const slide = (change: () => void) => {
+    if (reduceMotion.matches) return change();
+    const before = buttons.map((b) => b.getBoundingClientRect().top);
+    buttons.forEach((b) => {
+      b.style.transition = "none";
+      b.style.transform = "none";
+    });
+    change();
+    const moved = buttons.filter((b, i) => {
+      const dy = before[i] - b.getBoundingClientRect().top;
+      b.style.transform = Math.abs(dy) < 0.5 ? "" : `translateY(${dy}px)`;
+      return !!b.style.transform;
+    });
+    void root.offsetWidth;
+    buttons.forEach((b) => (b.style.transition = ""));
+    moved.forEach((b) => {
+      b.style.transition = "transform 420ms var(--ease-drawer)";
+      b.style.transform = "";
+    });
+  };
+  buttons.forEach((b) =>
+    b.addEventListener("transitionend", (e) => {
+      if (e.propertyName === "transform" && e.target === b) b.style.transition = "";
+    }),
+  );
+
   const show = (id: string) => {
     if (id === active) return;
     const prev = images.get(active);
     const next = images.get(id);
-    buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === id)));
+    slide(() => buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cat === id))));
     images.forEach((el) => el.classList.remove("was-active"));
     prev?.classList.remove("is-active", "is-printing");
     prev?.classList.add("was-active");

@@ -1,17 +1,20 @@
 // Behaviour for Composer.astro (bundled through main.ts, never inlined: the CSP only allows same-origin scripts).
 import { clipHighlight } from "./highlight";
+import { finePointer, reduceMotion } from "./motion";
 
 const form = document.querySelector<HTMLFormElement>("[data-composer]");
 const preview = document.querySelector<HTMLElement>("[data-preview]");
 const steps = document.querySelector<HTMLElement>("[data-steps]");
 const copyBtn = document.querySelector<HTMLButtonElement>("[data-copy]");
 const open = document.querySelector<HTMLAnchorElement>("[data-open]");
+const mail = document.querySelector<HTMLAnchorElement>("[data-mail]");
 const note = document.querySelector<HTMLElement>("[data-note]");
 
 if (form && preview && steps && copyBtn && open && note) {
   const que = form.elements.namedItem("que") as HTMLInputElement;
   const medidas = form.elements.namedItem("medidas") as HTMLInputElement;
   const cantidad = form.elements.namedItem("cantidad") as HTMLInputElement;
+  const direccion = form.elements.namedItem("direccion") as HTMLInputElement;
   const error = form.querySelector<HTMLElement>("[data-error]")!;
   const defaultNote = note.textContent?.trim() ?? "";
 
@@ -20,13 +23,14 @@ if (form && preview && steps && copyBtn && open && note) {
   const message = () => {
     const archivo = (form.elements.namedItem("archivo") as RadioNodeList).value;
     const n = count();
-    const lines = ["Hola, PROIN. Me gustaría cotizar:"];
+    const lines = ["Hola, Pro-In. Me gustaría cotizar:"];
     lines.push(`• Qué: ${que.value.trim() || "(por definir)"}`);
     if (medidas.value.trim()) lines.push(`• Medidas aproximadas: ${medidas.value.trim()}`);
     lines.push(`• Cantidad: ${n} ${n === 1 ? "pieza" : "piezas"}`);
     if (archivo === "si") lines.push("• Ya tengo archivo STL");
     else if (archivo === "no") lines.push("• Necesito diseño desde cero");
     else lines.push("• Todavía no sé si necesito diseño");
+    if (direccion.value.trim()) lines.push(`• Dirección: ${direccion.value.trim()}`);
     lines.push("¡Gracias!");
     return lines.join("\n");
   };
@@ -43,6 +47,11 @@ if (form && preview && steps && copyBtn && open && note) {
   const render = () => {
     const text = message();
     preview.textContent = text;
+    // Email can carry the whole message, unlike an Instagram DM.
+    if (mail) {
+      const to = mail.href.split("?")[0];
+      mail.href = `${to}?subject=${encodeURIComponent("Cotización")}&body=${encodeURIComponent(text)}`;
+    }
     // Editing after copying leaves a stale clipboard: back to step 1.
     if (steps.dataset.state === "copied" && text !== copiedText) {
       steps.dataset.state = "compose";
@@ -158,6 +167,10 @@ if (form && preview && steps && copyBtn && open && note) {
     copy(text).then(() => copied(text), failed);
   });
 
+  mail?.addEventListener("click", (e) => {
+    if (!ready()) e.preventDefault();
+  });
+
   open.addEventListener("click", (e) => {
     if (!ready()) {
       e.preventDefault();
@@ -171,4 +184,43 @@ if (form && preview && steps && copyBtn && open && note) {
   });
 
   render();
+}
+
+// Every "Cotiza tu idea" button lands here, often from 6,000 px away. A smooth
+// scroll that long takes over a second and fires every reveal on the way, so
+// long trips jump to just short of the form and glide the last stretch. On
+// arrival, the first question gets a single ring (and focus, with a mouse).
+const quote = document.getElementById("cotiza");
+const firstQuestion = document.getElementById("q-que");
+if (quote && firstQuestion) {
+  const cue = () => {
+    firstQuestion.classList.remove("is-called");
+    void firstQuestion.offsetWidth;
+    firstQuestion.classList.add("is-called");
+    if (finePointer.matches) firstQuestion.focus({ preventScroll: true });
+  };
+  document.addEventListener("click", (e) => {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    const link = (e.target as Element | null)?.closest?.('a[href="#cotiza"]');
+    if (!link) return;
+    e.preventDefault();
+    const reduce = reduceMotion.matches;
+    const top = quote.getBoundingClientRect().top;
+    if (!reduce && Math.abs(top) > innerHeight * 1.5) {
+      window.scrollTo({ top: scrollY + top - Math.sign(top) * innerHeight * 0.6, behavior: "instant" });
+    }
+    quote.scrollIntoView({ behavior: reduce ? "instant" : "smooth", block: "start" });
+    if (location.hash !== "#cotiza") history.pushState(null, "", "#cotiza");
+    let done = false;
+    const once = () => {
+      if (done) return;
+      done = true;
+      // A beat after the scroll stops, so the form's own reveal reads first.
+      window.setTimeout(cue, reduce ? 0 : 380);
+    };
+    window.addEventListener("scrollend", once, { once: true });
+    window.setTimeout(once, reduce ? 0 : 900);
+  });
+
+  if (location.hash === "#cotiza") window.setTimeout(cue, 600);
 }

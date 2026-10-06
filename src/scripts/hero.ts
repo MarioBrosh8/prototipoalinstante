@@ -10,7 +10,7 @@ if (root) {
     if (src && !root.querySelector("img")) {
       const img = new Image();
       img.className = "chamber__poster";
-      img.alt = "Lámpara esférica de celosía impresa por PROIN, encendida";
+      img.alt = "Lámpara esférica de celosía impresa por Pro-In, encendida";
       img.src = src;
       img.decoding = "async";
       root.prepend(img);

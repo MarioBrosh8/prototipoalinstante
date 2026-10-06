@@ -13,9 +13,8 @@ const links = [
 <div class="nav-sentinel" data-nav-sentinel aria-hidden="true"></div>
 <header class="nav" data-nav>
   <div class="nav__pill">
-    <a class="nav__brand" href="#inicio" aria-label="PROIN, inicio">
-      <span class="nav__mark"><Logo animate /></span>
-      <span class="nav__word">PROIN</span>
+    <a class="nav__brand" href="#inicio" aria-label="Pro-In, inicio">
+      <span class="nav__mark"><Logo variant="full" /></span>
     </a>
 
     <nav class="nav__links" aria-label="Secciones">
@@ -24,12 +23,12 @@ const links = [
     </nav>
 
     <div class="nav__end">
-      <a class="nav__ig" href={site.instagram} target="_blank" rel="noopener" aria-label="Instagram de PROIN">
+      <a class="nav__ig" href={site.instagram} target="_blank" rel="noopener" aria-label="Instagram de Pro-In">
         <Icon name="instagram-logo" size={22} />
       </a>
-      <a class="btn btn--sm" href={site.dm} target="_blank" rel="noopener">
+      <a class="btn btn--sm" href={site.quote}>
         {cta.contact}
-        <span class="btn__icon"><Icon name="paper-plane-tilt" size={16} /></span>
+        <span class="btn__icon"><Icon name="note-pencil" size={16} /></span>
       </a>
       <button class="nav__toggle" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span class="sr-only" data-menu-label>Abrir menú</span>
@@ -53,15 +52,18 @@ const links = [
       }
     </ul>
     <div class="menu__foot" style={`--i:${links.length}`}>
-      <a class="btn" href={site.dm} target="_blank" rel="noopener">
+      <a class="btn" href={site.quote}>
         {cta.contact}
-        <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+        <span class="btn__icon"><Icon name="note-pencil" size={18} /></span>
       </a>
       <a class="menu__ig" href={site.instagram} target="_blank" rel="noopener">
         <Icon name="instagram-logo" size={20} />
-        {site.handle}
+        {cta.instagram}
       </a>
-      <p class="menu__meta">{site.location}. Envíos a {site.areaServed}.</p>
+      <p class="menu__meta">
+        {site.location}. {site.shipping}.
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </p>
     </div>
   </nav>
 </div>
@@ -119,13 +121,7 @@ const links = [
 
   .nav__mark {
     display: block;
-    height: 38px;
-  }
-
-  .nav__word {
-    font-weight: 800;
-    font-size: 1.25rem;
-    letter-spacing: -0.02em;
+    height: 44px;
   }
 
   .nav__links {
@@ -181,11 +177,11 @@ const links = [
     transition:
       color 200ms ease,
       background-color 200ms ease,
-      transform 160ms var(--ease-out);
+      transform var(--dur-press) var(--ease-out);
   }
 
   .nav__ig:active {
-    transform: scale(0.94);
+    transform: scale(var(--press-icon));
   }
 
   :global(.btn.btn--sm) {
@@ -207,11 +203,11 @@ const links = [
     height: 46px;
     border-radius: var(--radius-pill);
     color: var(--ink);
-    transition: transform 160ms var(--ease-out);
+    transition: transform var(--dur-press) var(--ease-out);
   }
 
   .nav__toggle:active {
-    transform: scale(0.94);
+    transform: scale(var(--press-icon));
   }
 
   .burger {
@@ -227,7 +223,7 @@ const links = [
     height: 2px;
     border-radius: 2px;
     background: currentColor;
-    transition: transform 380ms var(--ease-drawer);
+    transition: transform 240ms var(--ease-in-out);
   }
 
   .burger span:first-child {
@@ -282,11 +278,6 @@ const links = [
     }
   }
 
-  @media (max-width: 339px) {
-    .nav__word {
-      display: none;
-    }
-  }
 
   /* Full-screen menu for small screens. */
   .menu {
@@ -300,7 +291,7 @@ const links = [
     -webkit-backdrop-filter: blur(20px) saturate(140%);
     backdrop-filter: blur(20px) saturate(140%);
     opacity: 0;
-    transition: opacity 260ms ease;
+    transition: opacity 220ms var(--ease-out);
     overflow-y: auto;
     overscroll-behavior: contain;
   }
@@ -326,20 +317,24 @@ const links = [
     line-height: 1.05;
   }
 
+  /* Closing is quick and all at once; only opening is staggered. */
   .menu__list li,
   .menu__foot {
     opacity: 0;
     transform: translateY(28px);
     transition:
-      opacity 420ms var(--ease-out),
-      transform 520ms var(--ease-drawer);
-    transition-delay: calc(60ms + var(--i) * 55ms);
+      opacity 160ms var(--ease-out),
+      transform 160ms var(--ease-out);
   }
 
   .menu.is-open .menu__list li,
   .menu.is-open .menu__foot {
     opacity: 1;
     transform: none;
+    transition:
+      opacity 420ms var(--ease-out),
+      transform 520ms var(--ease-drawer);
+    transition-delay: calc(60ms + var(--i) * 55ms);
   }
 
   .menu__foot {
@@ -357,8 +352,18 @@ const links = [
   }
 
   .menu__meta {
+    display: grid;
+    gap: 6px;
     font-size: 0.95rem;
     color: var(--ink-3);
+  }
+
+  .menu__meta a {
+    width: fit-content;
+    color: var(--ink-2);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--line-strong);
   }
 
   @media (prefers-reduced-motion: reduce) {

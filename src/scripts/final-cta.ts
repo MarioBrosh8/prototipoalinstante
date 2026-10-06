@@ -2,7 +2,9 @@
 import { reduceMotion, scrollProgress } from "./motion";
 
 const band = document.querySelector<HTMLElement>("[data-final]");
-if (band && !reduceMotion.matches) {
+const infill = band?.querySelector<HTMLElement>("[data-final-infill]");
+const solid = band?.querySelector<HTMLElement>("[data-final-solid]");
+if (band && infill && solid && !reduceMotion.matches) {
   const smooth = (a: number, b: number, x: number) => {
     const t = Math.min(1, Math.max(0, (x - a) / (b - a)));
     return t * t * (3 - 2 * t);
@@ -10,10 +12,12 @@ if (band && !reduceMotion.matches) {
   scrollProgress(
     band,
     (p) => {
-      band.style.setProperty("--hatch", smooth(0.12, 0.42, p).toFixed(3));
+      // Each value goes on the one layer that reads it, so a scroll frame
+      // restyles two elements, not the whole band.
+      infill.style.setProperty("--hatch", smooth(0.12, 0.42, p).toFixed(3));
       // Solid top layers land in discrete steps, like layers.
-      const solid = Math.min(1, Math.max(0, (p - 0.4) / 0.42));
-      band.style.setProperty("--solid", (Math.floor(solid * 18) / 18).toFixed(3));
+      const top = Math.min(1, Math.max(0, (p - 0.4) / 0.42));
+      solid.style.setProperty("--solid", (Math.floor(top * 18) / 18).toFixed(3));
     },
     { start: 1, end: 1 },
   );

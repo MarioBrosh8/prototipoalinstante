@@ -8,22 +8,20 @@ const title = "¿Lo imprimimos?";
 <section class="final" id="lo-imprimimos" aria-labelledby="final-title">
   <div class="final__band" data-final>
     <div class="final__inner">
-      <h2 id="final-title" class="final__title">
+      {/* The perimeter and infill copies sit beside the heading, not inside it,
+          so the heading reads once to search engines and screen readers. */}
+      <div class="final__title">
         <span class="final__layer final__outline" aria-hidden="true">{title}</span>
-        <span class="final__layer final__infill" aria-hidden="true">{title}</span>
-        <span class="final__layer final__solid">{title}</span>
-      </h2>
-      <p class="final__text">Mándanos tu idea por DM y te cotizamos. Si quieres, abajo te ayudamos a armar el mensaje.</p>
-      <div class="final__ctas">
-        <a class="btn btn--light" href={site.dm} target="_blank" rel="noopener" data-magnetic>
-          {cta.contact}
-          <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
-        </a>
-        <a class="final__ig" href={site.instagram} target="_blank" rel="noopener">
-          <Icon name="instagram-logo" size={20} />
-          {site.handle}
-        </a>
+        <span class="final__layer final__infill" aria-hidden="true" data-final-infill>{title}</span>
+        <h2 id="final-title" class="final__layer final__solid" data-final-solid>{title}</h2>
       </div>
+      {/* The questionnaire starts right below, so this band introduces it
+          instead of linking to it; Instagram stays as the other way in. */}
+      <p class="final__text">Cuéntanos tu idea aquí abajo y te cotizamos. Si prefieres, escríbenos por Instagram.</p>
+      <a class="final__ig" href={site.instagram} target="_blank" rel="noopener">
+        <Icon name="instagram-logo" size={20} />
+        {cta.instagram}
+      </a>
     </div>
   </div>
 </section>
@@ -42,7 +40,7 @@ const title = "¿Lo imprimimos?";
     border-radius: var(--radius-panel);
     color: #fdfbff;
     background:
-      var(--pattern) 0 0 / 88px 88px,
+      var(--pattern) 0 0 / 120px 136px,
       radial-gradient(90% 120% at 85% 10%, rgb(255 255 255 / 0.1), transparent 55%),
       linear-gradient(155deg, var(--brand-deep) 0%, var(--brand) 62%, #a558ce 100%);
     box-shadow:
@@ -90,6 +88,7 @@ const title = "¿Lo imprimimos?";
   }
 
   .final__solid {
+    font: inherit;
     color: #fdfbff;
     clip-path: inset(calc((1 - var(--solid)) * 100%) 0 0 0);
   }
@@ -101,19 +100,11 @@ const title = "¿Lo imprimimos?";
     text-wrap: balance;
   }
 
-  .final__ctas {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: center;
-    gap: 14px 22px;
-    margin-top: 8px;
-  }
-
   .final__ig {
     display: inline-flex;
     align-items: center;
     gap: 8px;
+    margin-top: 4px;
     padding: 12px 6px;
     font-weight: 600;
     color: rgb(253 251 255 / 0.9);
@@ -126,13 +117,9 @@ const title = "¿Lo imprimimos?";
 
   @media (hover: hover) and (pointer: fine) {
     .final__ig:hover {
-      color: #fff;
+      color: #fdfbff;
       text-decoration: underline;
       text-underline-offset: 4px;
     }
-  }
-
-  .final__band :global(.btn:focus-visible) {
-    outline-color: #fdfbff;
   }
 </style>

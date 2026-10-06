@@ -37,9 +37,7 @@ if (strip && track) {
   let moved = 0;
   let startX = 0;
   let startScroll = 0;
-  let lastX = 0;
-  let lastT = 0;
-  let velocity = 0;
+  let samples: { x: number; t: number }[] = [];
   let overshoot = 0;
   let raf = 0;
 
@@ -50,15 +48,23 @@ if (strip && track) {
     track.style.transform = px ? `translateX(${px.toFixed(1)}px)` : "";
   };
 
+  // Release speed over the last 100 ms of movement, in px per ms. Holding
+  // still for more than 80 ms before letting go means no fling.
+  const releaseSpeed = (t: number) => {
+    const last = samples[samples.length - 1];
+    if (!last || t - last.t > 80) return 0;
+    const first = samples.find((s) => last.t - s.t <= 100) ?? last;
+    return last.t > first.t ? (last.x - first.x) / (last.t - first.t) : 0;
+  };
+
   strip.addEventListener("pointerdown", (e) => {
     if (e.pointerType !== "mouse" || e.button !== 0 || !finePointer.matches) return;
     cancelAnimationFrame(raf);
     dragging = true;
     moved = 0;
-    startX = lastX = e.clientX;
+    startX = e.clientX;
     startScroll = strip.scrollLeft;
-    lastT = e.timeStamp;
-    velocity = 0;
+    samples = [{ x: e.clientX, t: e.timeStamp }];
     strip.setPointerCapture(e.pointerId);
   });
 
@@ -71,28 +77,46 @@ if (strip && track) {
     const clamped = Math.min(max(), Math.max(0, want));
     strip.scrollLeft = clamped;
     setOvershoot(want === clamped ? 0 : rubber(clamped - want));
-    const dt = e.timeStamp - lastT;
-    if (dt > 0) velocity = (e.clientX - lastX) / dt;
-    lastX = e.clientX;
-    lastT = e.timeStamp;
+    samples.push({ x: e.clientX, t: e.timeStamp });
+    if (samples.length > 12) samples.shift();
   });
 
-  const release = () => {
+  const release = (e: PointerEvent) => {
     if (!dragging) return;
     dragging = false;
-    let v = -velocity * 16; // px per frame
+    let v = -releaseSpeed(e.timeStamp) * 16.67; // px per 60 Hz frame
+    let ov = 0; // overshoot velocity
+    let pos = strip.scrollLeft;
     let last = performance.now();
     const glide = (now: number) => {
-      const dt = Math.min((now - last) / 16.67, 3);
+      const frames = Math.min((now - last) / 16.67, 3);
       last = now;
-      if (overshoot) {
-        // Spring back from past the edge.
-        setOvershoot(Math.abs(overshoot) < 0.5 ? 0 : overshoot * Math.pow(0.8, dt));
+      // Whole-frame steps keep the spring stable on a slow frame.
+      for (let left = frames; left > 0; left -= 1) {
+        const dt = Math.min(1, left);
+        if (v) {
+          const want = pos + v * dt;
+          pos = Math.min(max(), Math.max(0, want));
+          strip.scrollLeft = pos;
+          if (want !== pos) {
+            // Hit an end: what is left of the fling becomes a small bounce.
+            ov = -v * 0.6;
+            v = 0;
+          } else {
+            v *= Math.pow(0.94, dt);
+            if (Math.abs(v) < 0.3) v = 0;
+          }
+        }
+        if (overshoot || ov) {
+          // Critically damped spring back to the edge (no wobble).
+          ov += (-overshoot * 0.06 - ov * 0.5) * dt;
+          const nextOvershoot = overshoot + ov * dt;
+          if (Math.abs(nextOvershoot) < 0.4 && Math.abs(ov) < 0.4) {
+            ov = 0;
+            setOvershoot(0);
+          } else setOvershoot(Math.max(-64, Math.min(64, nextOvershoot)));
+        }
       }
-      if (Math.abs(v) > 0.3) {
-        strip.scrollLeft += v * dt;
-        v *= Math.pow(0.94, dt);
-      } else v = 0;
       if (v || overshoot) raf = requestAnimationFrame(glide);
       else strip.classList.remove("is-dragging");
     };

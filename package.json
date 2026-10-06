@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Sitio de PROIN (Prototipo al Instante): diseño e impresión 3D en Neza y CDMX.",
+  "description": "Sitio de Pro-In (Prototipo al Instante): diseño e impresión 3D en Neza con envío a todo México.",
   "engines": {
     "node": ">=22.12.0"
   },
@@ -13,7 +13,8 @@
     "preview": "astro build && wrangler dev --port 8791",
     "check": "astro check",
     "images": "node scripts/images.mjs",
-    "deploy": "npm run check && npm run build && wrangler deploy"
+    "deploy": "npm run check && npm run build && wrangler deploy",
+    "deploy:www": "wrangler deploy -c workers/www-redirect/wrangler.jsonc"
   },
   "dependencies": {
     "astro": "^7.3.4",

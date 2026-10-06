@@ -118,11 +118,11 @@ import { categorias } from "../data/site";
     transition: color 260ms ease;
   }
 
-  /* Description opens like an accordion for the active category. */
+  /* Description opens for the active category. The height change itself is
+     instant; categories.ts slides the items into place with transforms. */
   .cat__more {
     display: grid;
     grid-template-rows: 0fr;
-    transition: grid-template-rows 420ms var(--ease-drawer);
   }
 
   .cat__text {
@@ -131,7 +131,7 @@ import { categorias } from "../data/site";
     color: var(--ink-2);
     max-width: 42ch;
     opacity: 0;
-    transition: opacity 260ms ease;
+    transition: opacity 260ms var(--ease-out);
   }
 
   /* A filament line runs along the active item, like a fresh extrusion. */

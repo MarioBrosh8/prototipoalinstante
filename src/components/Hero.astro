@@ -3,6 +3,7 @@ import { getImage, Image } from "astro:assets";
 import Icon from "./Icon.astro";
 import { cta, site } from "../data/site";
 import { DEFAULT_FILAMENT, FILAMENTS } from "../scripts/filaments";
+import { hotend } from "../data/logo";
 import lamparaEsfera from "../assets/trabajos/lampara-esfera.jpg";
 
 // Shown instead of the 3D print when WebGL isn't available.
@@ -15,7 +16,7 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
     <div class="hero__copy">
       <p class="eyebrow hero__in" style="--d:0">
         <Icon name="map-pin" size={16} />
-        Impresión 3D en Neza y CDMX
+        Impresión 3D en Neza, envío a todo México
       </p>
       <h1 id="hero-title" class="display hero__title">
         <span class="hero__line" style="--d:0"><span class="hero__ink">Lo imaginas.</span></span>
@@ -25,9 +26,9 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
         Diseñamos desde cero o imprimimos tu archivo: lámparas, trofeos, llaveros para tu negocio, maquetas y más.
       </p>
       <div class="hero__ctas hero__in" style="--d:4">
-        <a class="btn" href={site.dm} target="_blank" rel="noopener" data-magnetic>
+        <a class="btn" href={site.quote} data-magnetic>
           {cta.contact}
-          <span class="btn__icon"><Icon name="paper-plane-tilt" size={18} /></span>
+          <span class="btn__icon"><Icon name="note-pencil" size={18} /></span>
         </a>
         <a class="btn btn--ghost" href={site.instagram} target="_blank" rel="noopener">
           <span class="btn__icon"><Icon name="instagram-logo" size={20} /></span>
@@ -55,7 +56,7 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
             src={lamparaEsfera}
             widths={[480, 640]}
             sizes="(min-width: 960px) 40vw, 90vw"
-            alt="Lámpara esférica de celosía impresa por PROIN, encendida"
+            alt="Lámpara esférica de celosía impresa por Pro-In, encendida"
           />
         </noscript>
 
@@ -63,10 +64,11 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
           <div class="loader__track">
             <span class="loader__line"></span>
             <span class="loader__head">
-              <svg viewBox="0 0 330 280" width="30" height="26">
-                <rect x="4" y="4" width="322" height="160" rx="26" fill="#8a3bc1"></rect>
-                <rect x="38" y="28" width="254" height="72" rx="8" fill="#b98ae8"></rect>
-                <path d="M69 164 H260 V224 Q260 274 210 274 H119 Q69 274 69 224 Z" fill="#8a3bc1"></path>
+              <svg viewBox="165 19 170 145" width="30" height="26">
+                <path d={hotend.block} fill="#a45ad8"></path>
+                <path d={hotend.nozzle} fill="#a45ad8"></path>
+                <path d={hotend.panel} fill="#d2b1f3"></path>
+                <path d={hotend.window} fill="#d2b1f3"></path>
               </svg>
             </span>
           </div>
@@ -437,7 +439,7 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
     border-radius: 50%;
     display: grid;
     place-items: center;
-    transition: transform 160ms var(--ease-out);
+    transition: transform var(--dur-press) var(--ease-out);
   }
 
   .swatch::before {
@@ -471,7 +473,7 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
   }
 
   .swatch:active {
-    transform: scale(0.9);
+    transform: scale(var(--press-icon));
   }
 
   .hud__fil {
@@ -499,13 +501,13 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
     font-size: 0.85rem;
     font-weight: 600;
     transition:
-      transform 160ms var(--ease-out),
+      transform var(--dur-press) var(--ease-out),
       background-color 200ms ease,
       color 200ms ease;
   }
 
   .chip:active {
-    transform: scale(0.95);
+    transform: scale(var(--press-icon));
   }
 
   .chip[aria-pressed="true"] {
@@ -564,6 +566,15 @@ const defaultName = FILAMENTS.find((f) => f.id === DEFAULT_FILAMENT)?.name ?? ""
       animation: print-line 820ms linear forwards;
       animation-delay: inherit;
       pointer-events: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hud,
+    .controls,
+    .chamber__hint,
+    :global(.is-ready) .chamber__hint:global(.is-gone) {
+      transform: none;
     }
   }
 

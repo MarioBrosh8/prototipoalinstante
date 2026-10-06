@@ -9,7 +9,7 @@ interface Props {
 }
 
 const {
-  title = `${site.name} | Impresión 3D en Neza y CDMX`,
+  title = `${site.name} | Impresión 3D en Neza con envío a todo México`,
   description = site.description,
   noindex = false,
 } = Astro.props;
@@ -24,6 +24,7 @@ const jsonLd = {
   description: site.description,
   url: site.url,
   image: ogImage,
+  email: site.email,
   sameAs: [site.instagram],
   address: {
     "@type": "PostalAddress",
@@ -31,7 +32,7 @@ const jsonLd = {
     addressRegion: "Estado de México",
     addressCountry: "MX",
   },
-  areaServed: ["Ciudad de México", "Zona metropolitana del Valle de México"],
+  areaServed: { "@type": "Country", name: "México" },
   paymentAccepted: "Tarjeta de crédito, tarjeta de débito, transferencia, efectivo",
 };
 ---
@@ -66,7 +67,7 @@ const jsonLd = {
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="PROIN, diseño e impresión 3D: lámpara, trofeo y llaveros impresos" />
+    <meta property="og:image:alt" content="Pro-In, diseño e impresión 3D: lámpara, trofeo y llaveros impresos" />
     <meta name="twitter:card" content="summary_large_image" />
 
     <script type="application/ld+json" is:inline set:html={JSON.stringify(jsonLd)} />

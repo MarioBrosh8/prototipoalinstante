@@ -2,7 +2,7 @@
 import { defineConfig } from "astro/config";
 
 export default defineConfig({
-  site: "https://prototipoalinstante.mariovaldez.dev",
+  site: "https://prototipoalinstante.com",
   // Pure static output: Cloudflare serves dist/ as Worker static assets, no
   // server code runs at all.
   output: "static",

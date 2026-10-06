@@ -10,7 +10,7 @@ export const finePointer = matchMedia("(hover: hover) and (pointer: fine)");
  * on screen is left alone, so nothing flashes and no-JS visitors see it all.
  */
 export function initReveals(scope: ParentNode = document) {
-  const els = scope.querySelectorAll<HTMLElement>("[data-reveal], [data-print]");
+  const els = scope.querySelectorAll<HTMLElement>("[data-reveal], [data-print], [data-draw]");
   if (!els.length) return;
   const io = new IntersectionObserver(
     (entries) => {

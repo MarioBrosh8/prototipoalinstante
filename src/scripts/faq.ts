@@ -1,5 +1,6 @@
 // Behaviour for Faq.astro (bundled through main.ts, never inlined: the CSP only allows same-origin scripts).
 import { clipHighlight } from "./highlight";
+import { reduceMotion } from "./motion";
 
 const root = document.querySelector<HTMLElement>("[data-tabs]");
 if (root) {
@@ -31,7 +32,7 @@ if (root) {
       }
     });
     place(tab);
-    tab.scrollIntoView({ block: "nearest", inline: "nearest", behavior: "smooth" });
+    tab.scrollIntoView({ block: "nearest", inline: "nearest", behavior: reduceMotion.matches ? "auto" : "smooth" });
     if (focus) tab.focus();
   };
 

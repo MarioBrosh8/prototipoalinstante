@@ -1,6 +1,7 @@
 ---
 import Icon from "./Icon.astro";
 import { pasos } from "../data/site";
+import { hotend } from "../data/logo";
 ---
 
 <section class="section process" id="proceso" aria-labelledby="process-title">
@@ -16,10 +17,11 @@ import { pasos } from "../data/site";
         <path class="process__line" data-line></path>
       </svg>
       <span class="process__nozzle" aria-hidden="true" data-nozzle>
-        <svg viewBox="0 0 330 290" width="34" height="30">
-          <rect x="4" y="4" width="322" height="160" rx="26" fill="#8a3bc1"></rect>
-          <rect x="38" y="28" width="254" height="72" rx="8" fill="#b98ae8"></rect>
-          <path d="M69 164 H260 V224 Q260 274 210 274 H119 Q69 274 69 224 Z" fill="#8a3bc1"></path>
+        <svg viewBox="165 19 170 145" width="34" height="29">
+          <path d={hotend.block} fill="var(--logo-ink)"></path>
+          <path d={hotend.nozzle} fill="var(--logo-ink)"></path>
+          <path d={hotend.panel} fill="var(--logo-light)"></path>
+          <path d={hotend.window} fill="var(--logo-light)"></path>
         </svg>
         <span class="process__hot"></span>
       </span>
