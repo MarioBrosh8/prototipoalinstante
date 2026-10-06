@@ -10,6 +10,7 @@ import lamparaYael from "../assets/trabajos/lampara-yael.jpg";
 import lamparaEsfera from "../assets/trabajos/lampara-esfera.jpg";
 import esferaRecienImpresa from "../assets/trabajos/esfera-recien-impresa.jpg";
 import trofeoGolf from "../assets/trabajos/trofeo-golf.jpg";
+import trofeosJoseee from "../assets/trabajos/trofeos-joseee-tour.jpg";
 import llaverosMayoreo from "../assets/trabajos/llaveros-mayoreo.jpg";
 import llaverosCarniceria from "../assets/trabajos/llaveros-carniceria.jpg";
 import llaverosRobot from "../assets/trabajos/llaveros-robot.jpg";
@@ -63,11 +64,11 @@ export const categorias: Categoria[] = [
   },
   {
     id: "trofeos",
-    pieza: "Trofeos para Marcelo's Masters 2026",
+    pieza: "Trofeos para el JOSEEE TOUR 2026",
     titulo: "Trofeos",
     texto: "Para tu torneo o evento, con los detalles completamente a tu gusto.",
-    foto: trofeoGolf,
-    alt: "Trofeo de golf de primer lugar impreso en 3D con placa dorada de Marcelo's Masters 2026",
+    foto: trofeosJoseee,
+    alt: "Tres trofeos de golf impresos en 3D, de primer, segundo y tercer lugar, con placas amarillas del JOSEEE TOUR 2026",
   },
   {
     id: "negocio",
