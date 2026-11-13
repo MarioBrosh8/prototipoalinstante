@@ -8,6 +8,9 @@ const steps = document.querySelector<HTMLElement>("[data-steps]");
 const copyBtn = document.querySelector<HTMLButtonElement>("[data-copy]");
 const open = document.querySelector<HTMLAnchorElement>("[data-open]");
 const mail = document.querySelector<HTMLAnchorElement>("[data-mail]");
+const wa = document.querySelector<HTMLAnchorElement>("[data-wa]");
+const channelSeg = document.querySelector<HTMLElement>("[data-channel-seg]");
+const channelWho = document.querySelector<HTMLElement>("[data-channel-who]");
 const note = document.querySelector<HTMLElement>("[data-note]");
 
 if (form && preview && steps && copyBtn && open && note) {
@@ -47,7 +50,8 @@ if (form && preview && steps && copyBtn && open && note) {
   const render = () => {
     const text = message();
     preview.textContent = text;
-    // Email can carry the whole message, unlike an Instagram DM.
+    // WhatsApp and email carry the whole message in the link, unlike an Instagram DM.
+    if (wa) wa.href = `${wa.href.split("?")[0]}?text=${encodeURIComponent(text)}`;
     if (mail) {
       const to = mail.href.split("?")[0];
       mail.href = `${to}?subject=${encodeURIComponent("Cotización")}&body=${encodeURIComponent(text)}`;
@@ -167,9 +171,38 @@ if (form && preview && steps && copyBtn && open && note) {
     copy(text).then(() => copied(text), failed);
   });
 
-  mail?.addEventListener("click", (e) => {
-    if (!ready()) e.preventDefault();
-  });
+  [wa, mail].forEach((link) =>
+    link?.addEventListener("click", (e) => {
+      if (!ready()) e.preventDefault();
+    }),
+  );
+
+  // Channel picker: WhatsApp (default), Instagram (copy, then paste) or email.
+  // The header under "Tu mensaje para Pro-In" follows the channel.
+  if (channelSeg) {
+    const placeChannel = clipHighlight(channelSeg, channelSeg.querySelector<HTMLElement>("[data-seg-active]")!);
+    const panels = Array.from(document.querySelectorAll<HTMLElement>("[data-channel]"));
+    const showChannel = (instant = false) => {
+      const checked = channelSeg.querySelector<HTMLInputElement>("input:checked");
+      const label = checked?.closest<HTMLElement>(".seg__opt");
+      if (!checked || !label) return;
+      placeChannel(label, instant);
+      if (channelWho && checked.dataset.who) channelWho.textContent = checked.dataset.who;
+      panels.forEach((p) => {
+        const on = p.dataset.channel === checked.value;
+        if (on && p.hidden) {
+          p.hidden = false;
+          if (!instant && !reduceMotion.matches) {
+            p.classList.remove("is-entering");
+            void p.offsetWidth;
+            p.classList.add("is-entering");
+          }
+        } else if (!on) p.hidden = true;
+      });
+    };
+    channelSeg.addEventListener("change", () => showChannel());
+    showChannel(true);
+  }
 
   open.addEventListener("click", (e) => {
     if (!ready()) {

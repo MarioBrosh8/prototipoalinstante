@@ -3,6 +3,12 @@ import Icon from "./Icon.astro";
 import Logo from "./Logo.astro";
 import { site } from "../data/site";
 
+const canales = [
+  { value: "whatsapp", label: "WhatsApp", who: site.whatsapp.display },
+  { value: "instagram", label: "Instagram", who: site.handle },
+  { value: "correo", label: "Correo", who: site.email },
+];
+
 const archivo = [
   { value: "si", label: "Sí, tengo" },
   { value: "no", label: "Necesito diseño" },
@@ -15,7 +21,7 @@ const archivo = [
     <div class="composer__main">
       <h2 id="composer-title" class="h2" data-reveal>Tu cotización empieza con un mensaje.</h2>
       <p class="lede" data-reveal style="--i:1">
-        Llena lo que sepas y armamos el mensaje con todo lo que necesitamos para cotizar. Tú solo lo pegas en el chat.
+        Llena lo que sepas y armamos el mensaje con todo lo que necesitamos para cotizar. Por WhatsApp sale listo para enviar; también puedes mandarlo por Instagram o correo.
       </p>
 
       <form class="form" data-composer novalidate data-reveal style="--i:2">
@@ -121,41 +127,75 @@ const archivo = [
             <span class="preview__avatar"><Logo /></span>
             <span class="preview__who">
               <strong id="preview-title">Tu mensaje para Pro-In</strong>
-              <span>{site.handle}</span>
+              <span data-channel-who>{site.whatsapp.display}</span>
             </span>
           </div>
           <div class="preview__thread">
             <p class="bubble" data-preview></p>
           </div>
-          <ol class="dm" data-steps data-state="compose">
-            <li>
-              <button type="button" class="dm__step dm__step--copy" data-copy>
-                <span class="dm__num" aria-hidden="true">
-                  <span class="dm__a">1</span>
-                  <span class="dm__b"><Icon name="check" size={20} /></span>
-                </span>
-                <span class="dm__label">
-                  <span class="dm__a">Copia tu mensaje</span>
-                  <span class="dm__b" aria-hidden="true">Mensaje copiado</span>
-                </span>
-                <span class="dm__icon"><Icon name="copy" size={20} /></span>
-              </button>
-            </li>
-            <li>
-              <a class="dm__step dm__step--open" href={site.dm} target="_blank" rel="noopener" data-open>
-                <span class="dm__num" aria-hidden="true">2</span>
-                <span class="dm__label">Abre el chat y pégalo</span>
+          <div class="send">
+            <p class="send__label" id="send-label">Mándalo por</p>
+            <div class="seg" data-channel-seg role="radiogroup" aria-labelledby="send-label">
+              {
+                canales.map((c) => (
+                  <label class="seg__opt">
+                    <input type="radio" name="canal" value={c.value} data-who={c.who} checked={c.value === "whatsapp"} />
+                    <span>{c.label}</span>
+                  </label>
+                ))
+              }
+              <span class="seg__active" aria-hidden="true" data-seg-active>
+                {canales.map((c) => <span class="seg__opt"><span>{c.label}</span></span>)}
+              </span>
+            </div>
+
+            {/* WhatsApp and email carry the whole message in their links: one tap. */}
+            <div class="send__panel" data-channel="whatsapp">
+              <a class="dm__step dm__step--solo" href={site.whatsapp.link} target="_blank" rel="noopener" data-wa>
+                <span class="dm__num" aria-hidden="true"><Icon name="whatsapp-logo" size={22} /></span>
+                <span class="dm__label">Enviar por WhatsApp</span>
                 <span class="dm__icon"><Icon name="arrow-up-right" size={20} /></span>
               </a>
-            </li>
-          </ol>
-          <p class="preview__note" data-note role="status">
-            Instagram no deja escribir el mensaje por ti: lo copias aquí y lo pegas en el chat.
-          </p>
-          <p class="preview__mail">
-            ¿Prefieres correo?{" "}
-            <a href={`mailto:${site.email}`} data-mail>Envíalo a {site.email}</a>
-          </p>
+              <p class="preview__note">Se abre WhatsApp con tu mensaje ya escrito para Pro-In. Solo toca enviar.</p>
+            </div>
+
+            <div class="send__panel" data-channel="instagram" hidden>
+              <ol class="dm" data-steps data-state="compose">
+                <li>
+                  <button type="button" class="dm__step dm__step--copy" data-copy>
+                    <span class="dm__num" aria-hidden="true">
+                      <span class="dm__a">1</span>
+                      <span class="dm__b"><Icon name="check" size={20} /></span>
+                    </span>
+                    <span class="dm__label">
+                      <span class="dm__a">Copia tu mensaje</span>
+                      <span class="dm__b" aria-hidden="true">Mensaje copiado</span>
+                    </span>
+                    <span class="dm__icon"><Icon name="copy" size={20} /></span>
+                  </button>
+                </li>
+                <li>
+                  <a class="dm__step dm__step--open" href={site.dm} target="_blank" rel="noopener" data-open>
+                    <span class="dm__num" aria-hidden="true">2</span>
+                    <span class="dm__label">Abre el chat y pégalo</span>
+                    <span class="dm__icon"><Icon name="arrow-up-right" size={20} /></span>
+                  </a>
+                </li>
+              </ol>
+              <p class="preview__note" data-note role="status">
+                Instagram no deja escribir el mensaje por ti: lo copias aquí y lo pegas en el chat.
+              </p>
+            </div>
+
+            <div class="send__panel" data-channel="correo" hidden>
+              <a class="dm__step dm__step--solo" href={`mailto:${site.email}`} data-mail>
+                <span class="dm__num" aria-hidden="true"><Icon name="envelope-simple" size={22} /></span>
+                <span class="dm__label">Enviar por correo</span>
+                <span class="dm__icon"><Icon name="arrow-up-right" size={20} /></span>
+              </a>
+              <p class="preview__note">Se abre tu app de correo con el mensaje listo para {site.email}.</p>
+            </div>
+          </div>
         </div>
       </div>
     </aside>
@@ -510,7 +550,8 @@ const archivo = [
   }
 
   [data-state="compose"] .dm__step--copy,
-  [data-state="copied"] .dm__step--open {
+  [data-state="copied"] .dm__step--open,
+  .dm__step--solo {
     --step-bg: var(--brand);
     --step-ink: var(--on-brand);
     --chip-bg: rgb(255 255 255 / 0.16);
@@ -606,20 +647,31 @@ const archivo = [
     min-height: 1.5em;
   }
 
-  .preview__mail {
-    padding-top: 14px;
-    border-top: 1px solid var(--line);
-    font-size: 0.88rem;
-    color: var(--ink-3);
-    overflow-wrap: anywhere;
+  /* Channel picker over the send buttons. WhatsApp first: its link carries the message. */
+  .send {
+    display: grid;
+    gap: 12px;
   }
 
-  .preview__mail a {
-    color: var(--ink-2);
-    font-weight: 600;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-    text-decoration-color: var(--line-strong);
+  .send__label {
+    font-weight: 650;
+    font-size: 0.95rem;
+  }
+
+  .send__panel {
+    display: grid;
+    gap: 12px;
+  }
+
+  .send__panel:global(.is-entering) {
+    animation: send-in 220ms var(--ease-out);
+  }
+
+  @keyframes send-in {
+    from {
+      opacity: 0;
+      transform: translateY(6px);
+    }
   }
 
   .preview__note[data-tone="ok"] {
@@ -646,16 +698,14 @@ const archivo = [
     }
 
     [data-state="compose"] .dm__step--copy:hover,
-    [data-state="copied"] .dm__step--open:hover {
+    [data-state="copied"] .dm__step--open:hover,
+    .dm__step--solo:hover {
       --step-bg: var(--brand-hover);
     }
 
-    .dm__step--open:hover .dm__icon {
+    .dm__step--open:hover .dm__icon,
+    .dm__step--solo:hover .dm__icon {
       transform: translate(2px, -2px);
-    }
-
-    .preview__mail a:hover {
-      color: var(--ink);
     }
   }
 
@@ -699,6 +749,7 @@ const archivo = [
       transition-duration: 0ms;
     }
 
+    .send__panel:global(.is-entering),
     .bubble.is-copied,
     [data-state="copied"] .dm__step--open::after {
       animation: none;

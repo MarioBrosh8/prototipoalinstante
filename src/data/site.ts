@@ -26,6 +26,13 @@ export const site = {
   url: "https://prototipoalinstante.com",
   handle: "@prototipoalinstante",
   email: "contacto@prototipoalinstante.com",
+  // WhatsApp Business of the Pro-In portfolio in Meta. Unlike Instagram,
+  // wa.me takes the message in ?text=, so the questionnaire sends it ready.
+  whatsapp: {
+    number: "5215667941734",
+    display: "+52 56 6794 1734",
+    link: "https://wa.me/5215667941734",
+  },
   instagram: "https://www.instagram.com/prototipoalinstante/",
   // ig.me opens a DM thread in the Instagram app (or instagram.com on desktop).
   dm: "https://ig.me/m/prototipoalinstante",

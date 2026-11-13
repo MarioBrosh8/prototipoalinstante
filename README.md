@@ -1,6 +1,6 @@
 # Pro-In · Prototipo al Instante
 
-Sitio de **Pro-In** ([@prototipoalinstante](https://www.instagram.com/prototipoalinstante/)), diseño e impresión 3D por metro Neza con envío a todo México. Contacto: contacto@prototipoalinstante.com.
+Sitio de **Pro-In** ([@prototipoalinstante](https://www.instagram.com/prototipoalinstante/)), diseño e impresión 3D por metro Neza con envío a todo México. Contacto: WhatsApp +52 56 6794 1734 y contacto@prototipoalinstante.com.
 
 **https://prototipoalinstante.com**
 
@@ -9,7 +9,7 @@ Sitio de **Pro-In** ([@prototipoalinstante](https://www.instagram.com/prototipoa
 - **Así se imprime tu idea**: los cuatro pasos, con un filamento que se "imprime" al hacer scroll.
 - **Trabajos**: carrusel arrastrable que abre cada publicación en Instagram.
 - **Precios, pagos y entregas**: lo que dice su publicación de *Cotizaciones*.
-- **Tu cotización empieza con un mensaje**: el cuestionario de cotización (todos los botones "Cotiza tu idea" llevan aquí, con un salto corto y un aviso en la primera pregunta). Arma el mensaje con lo que Pro-In necesita, incluida la dirección; se copia y se pega en su DM (Instagram no permite prellenar mensajes) o se manda ya escrito por correo.
+- **Tu cotización empieza con un mensaje**: el cuestionario de cotización (todos los botones "Cotiza tu idea" llevan aquí, con un salto corto y un aviso en la primera pregunta). Arma el mensaje con lo que Pro-In necesita, incluida la dirección, y se manda por el canal que elija el cliente: **WhatsApp** (por defecto; el enlace `wa.me` abre el chat con el mensaje ya escrito), **Instagram** (se copia y se pega en el DM, porque Instagram no permite prellenar mensajes) o **correo** (se abre ya escrito).
 - **Logo animado**: la boquilla baja y el filamento dibuja el ojo de un solo trazo, como lo extruiría la impresora; las letras se imprimen por capas. Va en la barra de navegación y en grande en el pie de página, sobre el patrón del logo.
 
 ## Stack
